@@ -9,7 +9,7 @@ export function Logo({ className }: { className?: string }) {
         alt="pickd"
         width={96}
         height={96}
-        className="h-9 w-9 object-contain"
+        className="h-9 w-9 object-cover object-top"
       />
       <span className="text-xl font-extrabold lowercase tracking-tight">
         pick<span className="text-spark">d</span>
