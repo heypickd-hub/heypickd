@@ -10,33 +10,84 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as SentRouteImport } from './routes/sent'
+import { Route as HBranchRouteImport } from './routes/h.$branch'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SentRoute = SentRouteImport.update({
+  id: '/sent',
+  path: '/sent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HBranchRoute = HBranchRouteImport.update({
+  id: '/h/$branch',
+  path: '/h/$branch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/menu': typeof MenuRoute
+  '/sent': typeof SentRoute
+  '/h/$branch': typeof HBranchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/menu': typeof MenuRoute
+  '/sent': typeof SentRoute
+  '/h/$branch': typeof HBranchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/menu': typeof MenuRoute
+  '/sent': typeof SentRoute
+  '/h/$branch': typeof HBranchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
+  id:
+    '__root__' | '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  MenuRoute: typeof MenuRoute
+  SentRoute: typeof SentRoute
+  HBranchRoute: typeof HBranchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +99,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sent': {
+      id: '/sent'
+      path: '/sent'
+      fullPath: '/sent'
+      preLoaderRoute: typeof SentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$branch': {
+      id: '/h/$branch'
+      path: '/h/$branch'
+      fullPath: '/h/$branch'
+      preLoaderRoute: typeof HBranchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  MenuRoute: MenuRoute,
+  SentRoute: SentRoute,
+  HBranchRoute: HBranchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
