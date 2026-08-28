@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Phone } from "lucide-react";
 import { useState } from "react";
+import { BannerRail } from "@/components/pickd/BannerRail";
 import { Mascot } from "@/components/pickd/Logo";
 import { ProductSheet } from "@/components/pickd/ProductSheet";
 import { Section } from "@/components/pickd/Section";
@@ -83,6 +84,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <BannerRail />
 
       <Section
         title="most pickd 🔥"
