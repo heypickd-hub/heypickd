@@ -49,7 +49,7 @@ function MenuPage() {
     if (cat === "most-pickd") items = items.filter((p) => p.featured);
     else if (cat !== "all") items = items.filter((p) => p.category === cat);
     if (filter === "veg") items = items.filter((p) => p.foodType === "veg");
-    if (filter === "nonveg") items = items.filter((p) => p.foodType === "nonveg");
+    if (filter === "nonveg") items = items.filter((p) => p.foodType === "non-veg");
     if (underBudget) items = items.filter((p) => p.price <= 199);
     return searchMenu(q, items);
   }, [q, cat, filter, underBudget]);
