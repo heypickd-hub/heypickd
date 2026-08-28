@@ -8,6 +8,7 @@ import { Section } from "@/components/pickd/Section";
 import { StatusBanner } from "@/components/pickd/StatusBanner";
 import { config, isOpenNow } from "@/config";
 import { byCategory, menu, mostPickd, type Product } from "@/data/menu";
+import { useFoodFilter } from "@/lib/veg-filter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,8 +34,18 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [active, setActive] = useState<Product | null>(null);
   const open = isOpenNow();
+  const { filter } = useFoodFilter();
 
-  const dinnerUnder199 = menu.filter((p) => p.price <= 199 && p.category !== "Drinks & Shakes");
+  const filtered = (items: Product[]) =>
+    filter === "all"
+      ? items
+      : items.filter((p) =>
+          filter === "veg" ? p.foodType === "veg" : p.foodType === "non-veg",
+        );
+
+  const dinnerUnder199 = filtered(
+    menu.filter((p) => p.price <= 199 && p.category !== "Drinks & Shakes"),
+  );
 
   return (
     <div className="pb-10">
@@ -90,7 +101,7 @@ function Home() {
       <Section
         title="most pickd 🔥"
         subtitle="the ones we'd start with."
-        items={mostPickd}
+        items={filtered(mostPickd)}
         onOpen={setActive}
         seeAll={{ cat: "most-pickd" }}
       />
@@ -103,49 +114,49 @@ function Home() {
       <Section
         title="biryani & rice"
         subtitle="the classics, done properly."
-        items={byCategory("Biryani & Rice")}
+        items={filtered(byCategory("Biryani & Rice"))}
         onOpen={setActive}
         seeAll={{ cat: "Biryani & Rice" }}
       />
       <Section
         title="burgers & wraps"
         subtitle="something quick?"
-        items={byCategory("Burgers & Wraps")}
+        items={filtered(byCategory("Burgers & Wraps"))}
         onOpen={setActive}
         seeAll={{ cat: "Burgers & Wraps" }}
       />
       <Section
         title="crispy & grill"
         subtitle="crunch worth the wait."
-        items={[...byCategory("Crispy & Grill"), ...byCategory("Shawarma & Grill")]}
+        items={filtered([...byCategory("Crispy & Grill"), ...byCategory("Shawarma & Grill")])}
         onOpen={setActive}
         seeAll={{ cat: "Crispy & Grill" }}
       />
       <Section
         title="south indian dinner"
         subtitle="comfort, straight off the tawa."
-        items={byCategory("South Indian Dinner")}
+        items={filtered(byCategory("South Indian Dinner"))}
         onOpen={setActive}
         seeAll={{ cat: "South Indian Dinner" }}
       />
       <Section
         title="veg picks"
         subtitle="green dot approved."
-        items={[...byCategory("Veg Picks"), ...menu.filter((p) => p.id === "p29")]}
+        items={filtered([...byCategory("Veg Picks"), ...menu.filter((p) => p.id === "p29")])}
         onOpen={setActive}
         seeAll={{ cat: "Veg Picks" }}
       />
       <Section
         title="drinks & shakes"
         subtitle="cold things that help."
-        items={byCategory("Drinks & Shakes")}
+        items={filtered(byCategory("Drinks & Shakes"))}
         onOpen={setActive}
         seeAll={{ cat: "Drinks & Shakes" }}
       />
       <Section
         title="sweet cravings"
         subtitle="finish it right."
-        items={[...byCategory("Sweet Cravings"), ...menu.filter((p) => p.id === "p33")]}
+        items={filtered([...byCategory("Sweet Cravings"), ...menu.filter((p) => p.id === "p33")])}
         onOpen={setActive}
         seeAll={{ cat: "Sweet Cravings" }}
       />

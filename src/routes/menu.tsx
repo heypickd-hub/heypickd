@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/pickd/ProductCard";
 import { ProductSheet } from "@/components/pickd/ProductSheet";
 import { categories, menu, searchMenu, type Product } from "@/data/menu";
+import { useFoodFilter } from "@/lib/veg-filter";
 import { cn } from "@/lib/utils";
 
 interface MenuSearch {
@@ -40,17 +41,18 @@ function MenuPage() {
   const { q, cat } = Route.useSearch();
   const navigate = useNavigate({ from: "/menu" });
   const [active, setActive] = useState<Product | null>(null);
-  const [vegOnly, setVegOnly] = useState(false);
+  const { filter, setFilter } = useFoodFilter();
   const [underBudget, setUnderBudget] = useState(false);
 
   const results = useMemo(() => {
     let items = menu;
     if (cat === "most-pickd") items = items.filter((p) => p.featured);
     else if (cat !== "all") items = items.filter((p) => p.category === cat);
-    if (vegOnly) items = items.filter((p) => p.foodType === "veg");
+    if (filter === "veg") items = items.filter((p) => p.foodType === "veg");
+    if (filter === "nonveg") items = items.filter((p) => p.foodType === "non-veg");
     if (underBudget) items = items.filter((p) => p.price <= 199);
     return searchMenu(q, items);
-  }, [q, cat, vegOnly, underBudget]);
+  }, [q, cat, filter, underBudget]);
 
   const setSearch = (next: Partial<MenuSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...next }) });
@@ -94,8 +96,17 @@ function MenuPage() {
       </div>
 
       <div className="shell mt-3 flex gap-2">
-        <Pill active={vegOnly} onClick={() => setVegOnly((v) => !v)}>
+        <Pill
+          active={filter === "veg"}
+          onClick={() => setFilter(filter === "veg" ? "all" : "veg")}
+        >
           🌱 veg only
+        </Pill>
+        <Pill
+          active={filter === "nonveg"}
+          onClick={() => setFilter(filter === "nonveg" ? "all" : "nonveg")}
+        >
+          🍗 non-veg only
         </Pill>
         <Pill active={underBudget} onClick={() => setUnderBudget((v) => !v)}>
           under ₹199
