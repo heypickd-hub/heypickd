@@ -26,7 +26,7 @@ export function BannerRail() {
 
   return (
     <section className="reveal mt-8" aria-label="pickd highlights">
-      <div className="relative mx-auto w-[calc(100%-2.5rem)] max-w-[720px] overflow-hidden rounded-2xl border border-border/60 bg-background shadow-[var(--shadow-lift)] lg:w-full lg:max-w-[720px]">
+      <div className="relative w-full overflow-hidden rounded-none border-y border-border/60 bg-background shadow-[var(--shadow-lift)] sm:rounded-2xl sm:border">
         <div
           className="flex transition-transform duration-700 ease-out will-change-transform"
           style={{ transform: `translateX(-${active * 100}%)` }}
