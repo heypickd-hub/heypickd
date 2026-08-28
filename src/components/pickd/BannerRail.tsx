@@ -1,3 +1,5 @@
+import { useEffect, useState, useCallback } from "react";
+import { cn } from "@/lib/utils";
 import banner1 from "@/assets/banner-1.png.asset.json";
 import banner2 from "@/assets/banner-2.png.asset.json";
 import banner3 from "@/assets/banner-3.png.asset.json";
@@ -8,19 +10,52 @@ const banners = [
   { src: banner3.url, alt: "scan. browse. order. — simple ordering for hotel guests" },
 ];
 
+const AUTO_DELAY_MS = 4000;
+
 export function BannerRail() {
+  const [active, setActive] = useState(0);
+
+  const next = useCallback(() => {
+    setActive((prev) => (prev + 1) % banners.length);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(next, AUTO_DELAY_MS);
+    return () => clearInterval(id);
+  }, [next]);
+
   return (
     <section className="reveal mt-8" aria-label="pickd highlights">
-      <div className="no-scrollbar flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-5 pb-2 lg:mx-auto lg:max-w-[1240px]">
-        {banners.map((b) => (
-          <img
-            key={b.src}
-            src={b.src}
-            alt={b.alt}
-            loading="lazy"
-            className="w-[86vw] max-w-[720px] shrink-0 snap-start rounded-2xl border border-border/60 object-cover shadow-[var(--shadow-lift)] sm:w-[560px]"
-          />
-        ))}
+      <div className="relative mx-auto w-[calc(100%-2.5rem)] max-w-[720px] overflow-hidden rounded-2xl border border-border/60 bg-background shadow-[var(--shadow-lift)] lg:w-full lg:max-w-[720px]">
+        <div
+          className="flex transition-transform duration-700 ease-out will-change-transform"
+          style={{ transform: `translateX(-${active * 100}%)` }}
+        >
+          {banners.map((b) => (
+            <img
+              key={b.src}
+              src={b.src}
+              alt={b.alt}
+              loading="lazy"
+              className="w-full shrink-0 object-cover"
+            />
+          ))}
+        </div>
+
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+          {banners.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Show banner ${i + 1}`}
+              onClick={() => setActive(i)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                i === active ? "w-6 bg-primary" : "w-2 bg-primary/40 hover:bg-primary/70"
+              )}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
