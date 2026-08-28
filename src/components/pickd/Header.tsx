@@ -3,6 +3,7 @@ import { Search, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
+import { FoodTypeSwitch } from "./FoodTypeSwitch";
 import { Logo } from "./Logo";
 
 export function Header() {
@@ -38,6 +39,7 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-1.5">
+          <FoodTypeSwitch />
           <button
             type="button"
             aria-label="search food"

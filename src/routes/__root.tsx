@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
+import { FoodFilterProvider } from "@/lib/veg-filter";
 import { Header } from "@/components/pickd/Header";
 import { Footer } from "@/components/pickd/Footer";
 import { CartBar } from "@/components/pickd/CartBar";
@@ -129,15 +130,17 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">
-            {/* Required: nested routes render here. */}
-            <Outlet />
-          </main>
-          <Footer />
-          <CartBar />
-        </div>
+        <FoodFilterProvider>
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">
+              {/* Required: nested routes render here. */}
+              <Outlet />
+            </main>
+            <Footer />
+            <CartBar />
+          </div>
+        </FoodFilterProvider>
       </CartProvider>
     </QueryClientProvider>
   );
