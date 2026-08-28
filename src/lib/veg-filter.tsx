@@ -48,8 +48,13 @@ export function FoodFilterProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useFoodFilter() {
+export function useFoodFilter(): FoodFilterValue {
   const ctx = useContext(FoodFilterContext);
-  if (!ctx) throw new Error("useFoodFilter must be used within FoodFilterProvider");
-  return ctx;
+  // Fallback keeps the UI alive (e.g. during HMR) instead of crashing the tree.
+  const [localFilter, setLocalFilter] = useState<FoodFilter>("all");
+  const fallback = useMemo<FoodFilterValue>(
+    () => ({ filter: localFilter, setFilter: setLocalFilter }),
+    [localFilter],
+  );
+  return ctx ?? fallback;
 }
