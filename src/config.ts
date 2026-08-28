@@ -4,9 +4,9 @@ export const config = {
     tagline: "good food, pickd for you.",
   },
   /** WhatsApp number in international format, digits only. */
-  whatsappNumber: "919000000000",
+  whatsappNumber: "918939650130",
   /** Phone number for the tel: link. */
-  phoneNumber: "+919000000000",
+  phoneNumber: "+918939650130",
   instagramUrl: "https://instagram.com/pickd",
   /** Minimum food order value in rupees. */
   minimumOrder: 199,
