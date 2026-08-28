@@ -1,4 +1,4 @@
-import { Instagram, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "lucide-react";
 import { config } from "@/config";
 import { Logo } from "./Logo";
 
@@ -14,15 +14,6 @@ export function Footer() {
         </div>
 
         <div className="flex items-center gap-2">
-          <a
-            href={config.instagramUrl}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="instagram"
-            className="rounded-full border border-border p-2.5 transition-colors hover:bg-secondary"
-          >
-            <Instagram className="h-4 w-4" />
-          </a>
           <a
             href={`https://wa.me/${config.whatsappNumber}`}
             target="_blank"

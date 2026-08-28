@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
         alt="pickd"
         width={1329}
         height={941}
-        className="h-7 w-auto object-contain"
+        className="h-9 w-auto object-contain"
       />
     </span>
   );
