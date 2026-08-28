@@ -6,14 +6,6 @@ export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <img
-        src={mascotAsset.url}
-        alt=""
-        aria-hidden="true"
-        width={96}
-        height={96}
-        className="h-9 w-9 object-contain"
-      />
-      <img
         src={wordmarkAsset.url}
         alt="pickd"
         width={1329}
