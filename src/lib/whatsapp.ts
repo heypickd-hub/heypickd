@@ -10,21 +10,25 @@ export interface OrderDetails {
 
 export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) {
   const lines = items.map(
-    (l) => `${l.qty} × ${l.product.name} — ₹${l.lineTotal}${l.note ? ` (${l.note})` : ""}`,
+    (l) =>
+      `• ${l.qty} × ${l.product.name} — ₹${l.lineTotal}${l.note ? ` (${l.note})` : ""}`,
   );
   const total = items.reduce((n, l) => n + l.lineTotal, 0);
 
   return [
-    "hey Pickd 👋",
+    "hey pickd 👋 i'm hungry!",
     "",
-    "I'd like to order:",
+    "here's my order 🍽️",
     ...lines,
     "",
-    `total: ₹${total}`,
+    `total: ₹${total} 💸`,
+    "",
     `name: ${details.name}`,
-    `room: ${details.room}`,
+    `room: ${details.room} 🛎️`,
     `hotel: ${details.hotel}`,
     ...(details.notes ? [`notes: ${details.notes}`] : []),
+    "",
+    "pickd for me, please 🧡",
   ].join("\n");
 }
 
