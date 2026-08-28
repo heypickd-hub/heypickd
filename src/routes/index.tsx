@@ -114,14 +114,14 @@ function Home() {
       <Section
         title="biryani & rice"
         subtitle="the classics, done properly."
-        items={filtered(byCategory("Biryani & Rice")}
+        items={filtered(byCategory("Biryani & Rice"))}
         onOpen={setActive}
         seeAll={{ cat: "Biryani & Rice" }}
       />
       <Section
         title="burgers & wraps"
         subtitle="something quick?"
-        items={filtered(byCategory("Burgers & Wraps")}
+        items={filtered(byCategory("Burgers & Wraps"))}
         onOpen={setActive}
         seeAll={{ cat: "Burgers & Wraps" }}
       />
@@ -135,28 +135,28 @@ function Home() {
       <Section
         title="south indian dinner"
         subtitle="comfort, straight off the tawa."
-        items={filtered(byCategory("South Indian Dinner")}
+        items={filtered(byCategory("South Indian Dinner"))}
         onOpen={setActive}
         seeAll={{ cat: "South Indian Dinner" }}
       />
       <Section
         title="veg picks"
         subtitle="green dot approved."
-        items={[...byCategory("Veg Picks"), ...menu.filter((p) => p.id === "p29")]}
+        items={filtered([...byCategory("Veg Picks"), ...menu.filter((p) => p.id === "p29")])}
         onOpen={setActive}
         seeAll={{ cat: "Veg Picks" }}
       />
       <Section
         title="drinks & shakes"
         subtitle="cold things that help."
-        items={filtered(byCategory("Drinks & Shakes")}
+        items={filtered(byCategory("Drinks & Shakes"))}
         onOpen={setActive}
         seeAll={{ cat: "Drinks & Shakes" }}
       />
       <Section
         title="sweet cravings"
         subtitle="finish it right."
-        items={[...byCategory("Sweet Cravings"), ...menu.filter((p) => p.id === "p33")]}
+        items={filtered([...byCategory("Sweet Cravings"), ...menu.filter((p) => p.id === "p33")])}
         onOpen={setActive}
         seeAll={{ cat: "Sweet Cravings" }}
       />
