@@ -101,7 +101,7 @@ function Home() {
       <Section
         title="most pickd 🔥"
         subtitle="the ones we'd start with."
-        items={mostPickd}
+        items={filtered(mostPickd)}
         onOpen={setActive}
         seeAll={{ cat: "most-pickd" }}
       />
@@ -114,28 +114,28 @@ function Home() {
       <Section
         title="biryani & rice"
         subtitle="the classics, done properly."
-        items={byCategory("Biryani & Rice")}
+        items={filtered(byCategory("Biryani & Rice")}
         onOpen={setActive}
         seeAll={{ cat: "Biryani & Rice" }}
       />
       <Section
         title="burgers & wraps"
         subtitle="something quick?"
-        items={byCategory("Burgers & Wraps")}
+        items={filtered(byCategory("Burgers & Wraps")}
         onOpen={setActive}
         seeAll={{ cat: "Burgers & Wraps" }}
       />
       <Section
         title="crispy & grill"
         subtitle="crunch worth the wait."
-        items={[...byCategory("Crispy & Grill"), ...byCategory("Shawarma & Grill")]}
+        items={filtered([...byCategory("Crispy & Grill"), ...byCategory("Shawarma & Grill")])}
         onOpen={setActive}
         seeAll={{ cat: "Crispy & Grill" }}
       />
       <Section
         title="south indian dinner"
         subtitle="comfort, straight off the tawa."
-        items={byCategory("South Indian Dinner")}
+        items={filtered(byCategory("South Indian Dinner")}
         onOpen={setActive}
         seeAll={{ cat: "South Indian Dinner" }}
       />
@@ -149,7 +149,7 @@ function Home() {
       <Section
         title="drinks & shakes"
         subtitle="cold things that help."
-        items={byCategory("Drinks & Shakes")}
+        items={filtered(byCategory("Drinks & Shakes")}
         onOpen={setActive}
         seeAll={{ cat: "Drinks & Shakes" }}
       />
