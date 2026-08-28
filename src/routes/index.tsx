@@ -8,6 +8,7 @@ import { Section } from "@/components/pickd/Section";
 import { StatusBanner } from "@/components/pickd/StatusBanner";
 import { config, isOpenNow } from "@/config";
 import { byCategory, menu, mostPickd, type Product } from "@/data/menu";
+import { useFoodFilter } from "@/lib/veg-filter";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,8 +34,18 @@ export const Route = createFileRoute("/")({
 function Home() {
   const [active, setActive] = useState<Product | null>(null);
   const open = isOpenNow();
+  const { filter } = useFoodFilter();
 
-  const dinnerUnder199 = menu.filter((p) => p.price <= 199 && p.category !== "Drinks & Shakes");
+  const filtered = (items: Product[]) =>
+    filter === "all"
+      ? items
+      : items.filter((p) =>
+          filter === "veg" ? p.foodType === "veg" : p.foodType === "non-veg",
+        );
+
+  const dinnerUnder199 = filtered(
+    menu.filter((p) => p.price <= 199 && p.category !== "Drinks & Shakes"),
+  );
 
   return (
     <div className="pb-10">
