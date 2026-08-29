@@ -27,7 +27,7 @@ export function Header() {
     >
       <div className="shell flex items-center justify-between gap-4">
         <Link to="/" className="flex flex-col gap-0.5">
-          <Logo />
+          <Logo imgClassName={cn("transition-all duration-300", compact ? "h-11" : "h-16")} />
           <span
             className={cn(
               "text-[11px] lowercase text-muted-foreground transition-all",

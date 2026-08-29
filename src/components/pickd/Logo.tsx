@@ -2,7 +2,7 @@ import mascotImg from "@/assets/pickd-mascot.png";
 import wordmarkImg from "@/assets/pickd-wordmark.png";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className, imgClassName }: { className?: string; imgClassName?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <img
@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
         alt="pickd"
         width={1329}
         height={941}
-        className="h-9 w-auto object-contain"
+        className={cn("h-9 w-auto object-contain", imgClassName)}
       />
     </span>
   );
