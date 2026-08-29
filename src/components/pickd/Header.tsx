@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useLocation } from "@tanstack/react-router";
 import { Search, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart";
@@ -9,29 +9,39 @@ import { Logo } from "./Logo";
 export function Header() {
   const { count } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   const [compact, setCompact] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setCompact(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      const y = window.scrollY;
+      if (y > 30) {
+        setCompact(true);
+      } else if (y <= 10) {
+        setCompact(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md transition-all duration-300",
-        compact ? "py-2" : "py-3.5",
+        "sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md transition-all duration-200",
+        compact ? "py-2" : "py-2.5",
       )}
     >
       <div className="shell flex items-center justify-between gap-4">
-        <Link to="/" className="flex flex-col gap-0.5">
-          <Logo imgClassName={cn("transition-all duration-300", compact ? "h-11" : "h-16")} />
+        <Link to="/" replace={isHome} className="flex flex-col gap-0.5 select-none">
+          <Logo imgClassName={cn("transition-all duration-200", compact ? "h-11" : "h-14")} />
           <span
             className={cn(
-              "text-[11px] lowercase text-muted-foreground transition-all",
-              compact && "h-0 overflow-hidden opacity-0",
+              "text-[11px] lowercase text-muted-foreground transition-all duration-200 leading-none",
+              compact ? "hidden" : "block",
             )}
           >
             delivering to your stay

@@ -4,6 +4,7 @@ import type { Product } from "@/data/menu";
 import { ProductCard } from "./ProductCard";
 
 interface Props {
+  id?: string;
   title: string;
   subtitle?: string;
   items: Product[];
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function Section({
+  id,
   title,
   subtitle,
   items,
@@ -23,13 +25,11 @@ export function Section({
   if (items.length === 0) return null;
 
   return (
-    <section className="reveal mt-10">
+    <section id={id} className="reveal mt-10 scroll-mt-20">
       <div className="shell flex items-end justify-between gap-4">
         <div>
           <h2 className="text-xl font-extrabold lowercase sm:text-2xl">{title}</h2>
-          {subtitle && (
-            <p className="mt-0.5 text-sm lowercase text-muted-foreground">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-0.5 text-sm lowercase text-muted-foreground">{subtitle}</p>}
         </div>
         {seeAll && (
           <Link

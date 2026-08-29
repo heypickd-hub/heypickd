@@ -8,9 +8,7 @@ export function Footer() {
       <div className="shell flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Logo />
-          <p className="mt-1.5 text-sm lowercase text-muted-foreground">
-            {config.brand.tagline}
-          </p>
+          <p className="mt-1.5 text-sm lowercase text-muted-foreground">{config.brand.tagline}</p>
         </div>
 
         <div className="flex items-center gap-2">

@@ -118,9 +118,7 @@ export function ProductSheet({ product, onClose }: Props) {
             }}
             className="flex-1 rounded-full bg-primary px-5 py-3 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-50"
           >
-            {product.available
-              ? `add to pickd · ₹${product.price * qty}`
-              : "sold out for now"}
+            {product.available ? `add to pickd · ₹${product.price * qty}` : "sold out for now"}
           </button>
         </div>
       </div>

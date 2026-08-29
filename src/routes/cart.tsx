@@ -57,10 +57,7 @@ function CartPage() {
 
         <div className="mt-4 space-y-3">
           {items.map((line) => (
-            <div
-              key={line.id}
-              className="rounded-2xl border border-border/70 bg-card p-3.5"
-            >
+            <div key={line.id} className="rounded-2xl border border-border/70 bg-card p-3.5">
               <div className="flex gap-3">
                 <img
                   src={line.product.image}
@@ -75,9 +72,7 @@ function CartPage() {
                     <FoodTypeDot type={line.product.foodType} className="mt-1" />
                     <h2 className="text-sm font-bold leading-snug">{line.product.name}</h2>
                   </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    ₹{line.product.price} each
-                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">₹{line.product.price} each</p>
                   {line.custom && (
                     <p className="mt-1.5 text-xs text-muted-foreground italic lowercase">
                       {line.custom.parts.join(" + ")}
@@ -139,8 +134,8 @@ function CartPage() {
               />
             </div>
             <p className="mt-2 text-xs lowercase text-muted-foreground">
-              minimum order is ₹{config.minimumOrder} — fries, drinks and desserts get you
-              there quickly.
+              minimum order is ₹{config.minimumOrder} — fries, drinks and desserts get you there
+              quickly.
             </p>
           </div>
         )}
@@ -157,9 +152,7 @@ function CartPage() {
         )}
 
         <div className="mt-8 flex items-center justify-between border-t border-border pt-4">
-          <span className="text-sm font-semibold lowercase text-muted-foreground">
-            subtotal
-          </span>
+          <span className="text-sm font-semibold lowercase text-muted-foreground">subtotal</span>
           <span className="text-xl font-extrabold">₹{subtotal}</span>
         </div>
 

@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { Mascot } from "./Logo";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { config } from "@/config";
 import { buildAskMessage, whatsappUrl } from "@/lib/whatsapp";
 import { track } from "@/lib/analytics";
@@ -32,19 +38,25 @@ export function AskPickdSection() {
                 <p className="max-w-xl text-sm leading-relaxed text-muted-foreground lowercase">
                   tell us what you need. we'll check nearby, confirm the price, and get it for you.
                 </p>
-                
+
                 {/* 3-step visual explainer */}
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-1.5 text-[11px] text-muted-foreground uppercase tracking-wider font-bold">
                   <div className="flex items-center gap-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">1</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">
+                      1
+                    </span>
                     tell us
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">2</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">
+                      2
+                    </span>
                     we check & quote
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">3</span>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-butter/10 text-butter text-[10px] font-bold">
+                      3
+                    </span>
                     you confirm
                   </div>
                 </div>
@@ -72,7 +84,13 @@ export function AskPickdSection() {
   );
 }
 
-export function AskPickdModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function AskPickdModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { branch } = useCart();
   const [item, setItem] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -94,7 +112,7 @@ export function AskPickdModal({ open, onOpenChange }: { open: boolean; onOpenCha
     });
 
     track("ask_pickd_sent", { item, room });
-    
+
     // Reset state & close
     setItem("");
     setQuantity("");

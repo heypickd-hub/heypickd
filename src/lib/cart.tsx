@@ -76,8 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as CartLine[];
-        if (Array.isArray(parsed))
-          setLines(parsed.filter((l) => l.custom || getProduct(l.id)));
+        if (Array.isArray(parsed)) setLines(parsed.filter((l) => l.custom || getProduct(l.id)));
       }
       setBranchState(localStorage.getItem(BRANCH_KEY));
     } catch {
@@ -147,9 +146,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () =>
       lines
         .map((line) => {
-          const product = line.custom
-            ? customToProduct(line.id, line.custom)
-            : getProduct(line.id);
+          const product = line.custom ? customToProduct(line.id, line.custom) : getProduct(line.id);
           if (!product) return null;
           return { ...line, product, lineTotal: product.price * line.qty };
         })

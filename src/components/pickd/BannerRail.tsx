@@ -28,35 +28,35 @@ export function BannerRail() {
     <section className="reveal mt-8" aria-label="pickd highlights">
       <div className="shell">
         <div className="relative w-full overflow-hidden rounded-2xl border border-border/60 bg-background shadow-[var(--shadow-lift)]">
-        <div
-          className="flex transition-transform duration-700 ease-out will-change-transform"
-          style={{ transform: `translateX(-${active * 100}%)` }}
-        >
-          {banners.map((b) => (
-            <img
-              key={b.src}
-              src={b.src}
-              alt={b.alt}
-              loading="lazy"
-              className="w-full shrink-0 object-cover"
-            />
-          ))}
-        </div>
+          <div
+            className="flex transition-transform duration-700 ease-out will-change-transform"
+            style={{ transform: `translateX(-${active * 100}%)` }}
+          >
+            {banners.map((b) => (
+              <img
+                key={b.src}
+                src={b.src}
+                alt={b.alt}
+                loading="lazy"
+                className="w-full shrink-0 object-cover"
+              />
+            ))}
+          </div>
 
-        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
-          {banners.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Show banner ${i + 1}`}
-              onClick={() => setActive(i)}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                i === active ? "w-6 bg-primary" : "w-2 bg-primary/40 hover:bg-primary/70"
-              )}
-            />
-          ))}
-        </div>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+            {banners.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`Show banner ${i + 1}`}
+                onClick={() => setActive(i)}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-300",
+                  i === active ? "w-6 bg-primary" : "w-2 bg-primary/40 hover:bg-primary/70",
+                )}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

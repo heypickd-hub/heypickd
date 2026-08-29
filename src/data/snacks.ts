@@ -39,8 +39,7 @@ export const snackItems: SnackItem[] = [
   { id: "x-water", name: "water", price: 20, kind: "extra", image: water },
 ];
 
-export const snacksByKind = (kind: SnackKind) =>
-  snackItems.filter((s) => s.kind === kind);
+export const snacksByKind = (kind: SnackKind) => snackItems.filter((s) => s.kind === kind);
 
 export const getSnack = (id: string) => snackItems.find((s) => s.id === id);
 

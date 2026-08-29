@@ -51,15 +51,7 @@ function Option({
   );
 }
 
-function Step({
-  n,
-  title,
-  children,
-}: {
-  n: number;
-  title: string;
-  children: React.ReactNode;
-}) {
+function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <div className="mt-5">
       <p className="text-sm font-bold lowercase">
@@ -200,9 +192,7 @@ export function ComboBuilder() {
             disabled={!ready}
             className={cn(
               "inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold lowercase transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
-              added
-                ? "bg-veg text-primary-foreground"
-                : "bg-primary text-primary-foreground",
+              added ? "bg-veg text-primary-foreground" : "bg-primary text-primary-foreground",
             )}
           >
             {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}

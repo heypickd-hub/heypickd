@@ -68,19 +68,19 @@ Keep everything extremely simple.
 
 Use:
 
-* React
+- React
 
-* TypeScript
+- TypeScript
 
-* Vite
+- Vite
 
-* Tailwind CSS
+- Tailwind CSS
 
-* Lucide Icons
+- Lucide Icons
 
-* React Router
+- React Router
 
-* localStorage for cart persistence
+- localStorage for cart persistence
 
 Keep dependencies lightweight.
 
@@ -107,25 +107,17 @@ Output directory:
 Create a root-level `vercel.json`:
 
 ```json
-
 {
-
   "$schema": "https://openapi.vercel.sh/vercel.json",
 
   "rewrites": [
-
     {
-
       "source": "/(.*)",
 
       "destination": "/index.html"
-
     }
-
   ]
-
 }
-
 ```
 
 Do not use functionality that works only inside the AI builder's preview environment.
@@ -138,19 +130,19 @@ Pickd should have a **minimal Gen-Z food brand aesthetic**.
 
 Think:
 
-* warm
+- warm
 
-* cute
+- cute
 
-* premium
+- premium
 
-* spacious
+- spacious
 
-* modern
+- modern
 
-* playful
+- playful
 
-* clean
+- clean
 
 Do NOT make it look corporate.
 
@@ -202,13 +194,13 @@ Do NOT make the entire website orange.
 
 Orange should appear only in:
 
-* logo
+- logo
 
-* tiny highlights
+- tiny highlights
 
-* badges
+- badges
 
-* selected states
+- selected states
 
 This will help Pickd look different from Swiggy.
 
@@ -346,11 +338,11 @@ Search should filter the 40 menu items instantly.
 
 Search by:
 
-* name
+- name
 
-* category
+- category
 
-* keywords
+- keywords
 
 ---
 
@@ -442,19 +434,19 @@ Cards must be clean.
 
 Every product card contains:
 
-* food image
+- food image
 
-* food name
+- food name
 
-* short description
+- short description
 
-* food type indicator
+- food type indicator
 
-* Pickd price
+- Pickd price
 
-* small category label
+- small category label
 
-* Add button
+- Add button
 
 Example:
 
@@ -482,15 +474,15 @@ Do not use cartoon food imagery.
 
 Food photography should feel:
 
-* warm
+- warm
 
-* clean
+- clean
 
-* realistic
+- realistic
 
-* appetising
+- appetising
 
-* not overly glossy
+- not overly glossy
 
 Use consistent image ratios.
 
@@ -545,31 +537,9 @@ Store all items in a clean data structure such as:
 Each product should contain:
 
 ```ts
-
 {
-
-  id,
-
-  name,
-
-  description,
-
-  price,
-
-  category,
-
-  foodType,
-
-  source,
-
-  featured,
-
-  image,
-
-  keywords
-
+  (id, name, description, price, category, foodType, source, featured, image, keywords);
 }
-
 ```
 
 The `source` field is INTERNAL.
@@ -1807,13 +1777,11 @@ Disable add button.
 In configuration support:
 
 ```ts
+openingTime;
 
-openingTime
+closingTime;
 
-closingTime
-
-ordersPaused
-
+ordersPaused;
 ```
 
 If unavailable:
@@ -1998,11 +1966,11 @@ The site should feel like:
 
 a cute modern food startup
 
-*
+-
 
 a clean boutique café menu
 
-*
+-
 
 a simple mobile ordering experience.
 
@@ -2026,57 +1994,57 @@ Avoid excessive rounded cards.
 
 Before completing the project test:
 
-* all 40 products exist
+- all 40 products exist
 
-* all 40 prices match this prompt exactly
+- all 40 prices match this prompt exactly
 
-* product descriptions display correctly
+- product descriptions display correctly
 
-* categories work
+- categories work
 
-* search works
+- search works
 
-* Most Pickd works
+- Most Pickd works
 
-* under ₹199 filtering works
+- under ₹199 filtering works
 
-* veg filtering works
+- veg filtering works
 
-* add to cart works
+- add to cart works
 
-* quantity works
+- quantity works
 
-* cart persists after refresh
+- cart persists after refresh
 
-* ₹199 minimum order works
+- ₹199 minimum order works
 
-* WhatsApp message contains correct products
+- WhatsApp message contains correct products
 
-* totals calculate correctly
+- totals calculate correctly
 
-* name works
+- name works
 
-* room number works
+- room number works
 
-* call button works
+- call button works
 
-* sold-out state works
+- sold-out state works
 
-* closed state works
+- closed state works
 
-* mobile UI is polished
+- mobile UI is polished
 
-* desktop UI is polished
+- desktop UI is polished
 
-* no restaurant cost appears publicly
+- no restaurant cost appears publicly
 
-* source restaurant is not prominently shown
+- source restaurant is not prominently shown
 
-* Vercel build succeeds
+- Vercel build succeeds
 
-* refreshing internal routes does not return 404
+- refreshing internal routes does not return 404
 
-* no console errors
+- no console errors
 
 The final result must feel like a **real Pickd launch website**, not a generic food menu template.
 

@@ -41,11 +41,7 @@ export function FoodFilterProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(() => ({ filter, setFilter }), [filter, setFilter]);
-  return (
-    <FoodFilterContext.Provider value={value}>
-      {children}
-    </FoodFilterContext.Provider>
-  );
+  return <FoodFilterContext.Provider value={value}>{children}</FoodFilterContext.Provider>;
 }
 
 export function useFoodFilter(): FoodFilterValue {

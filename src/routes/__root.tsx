@@ -49,9 +49,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-bold lowercase text-foreground">
-          this page didn't load
-        </h1>
+        <h1 className="text-xl font-bold lowercase text-foreground">this page didn't load</h1>
         <p className="mt-2 text-sm lowercase text-muted-foreground">
           something went wrong on our end. try refreshing or head back home.
         </p>
@@ -86,8 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "pickd — good food, pickd for you" },
       {
         name: "description",
-        content:
-          "Curated food, snacks and drinks delivered straight to your hotel stay.",
+        content: "Curated food, snacks and drinks delivered straight to your hotel stay.",
       },
       { property: "og:site_name", content: "pickd" },
       { property: "og:type", content: "website" },

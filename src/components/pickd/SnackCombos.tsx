@@ -66,12 +66,10 @@ function PresetCard({ combo }: { combo: ComboPreset }) {
 
 export function SnackCombos() {
   return (
-    <section id="snacks" className="reveal mt-10">
+    <section id="snacks-chill" className="reveal mt-10 scroll-mt-20">
       <div className="shell">
         <h2 className="text-xl font-extrabold lowercase sm:text-2xl">snacks & chill</h2>
-        <p className="mt-0.5 text-sm lowercase text-muted-foreground">
-          quick bites for the room.
-        </p>
+        <p className="mt-0.5 text-sm lowercase text-muted-foreground">quick bites for the room.</p>
         <div className="mt-4 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4">
           {comboPresets.map((c) => (
             <PresetCard key={c.id} combo={c} />

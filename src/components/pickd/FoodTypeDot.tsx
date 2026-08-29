@@ -13,9 +13,7 @@ export function FoodTypeDot({ type, className }: { type: FoodType; className?: s
         className,
       )}
     >
-      <span
-        className={cn("h-1.5 w-1.5 rounded-full", veg ? "bg-veg" : "bg-nonveg")}
-      />
+      <span className={cn("h-1.5 w-1.5 rounded-full", veg ? "bg-veg" : "bg-nonveg")} />
     </span>
   );
 }

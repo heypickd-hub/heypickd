@@ -46,9 +46,7 @@ export function isOpenNow(now = new Date()): boolean {
   const current = now.getHours() * 60 + now.getMinutes();
   const open = toMinutes(config.openingTime);
   const close = toMinutes(config.closingTime);
-  return close > open
-    ? current >= open && current < close
-    : current >= open || current < close;
+  return close > open ? current >= open && current < close : current >= open || current < close;
 }
 
 export function formatPrice(value: number) {

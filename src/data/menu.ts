@@ -607,8 +607,7 @@ export const menu: Product[] = [
 
 export const getProduct = (id: string) => menu.find((p) => p.id === id);
 
-export const byCategory = (category: Category) =>
-  menu.filter((p) => p.category === category);
+export const byCategory = (category: Category) => menu.filter((p) => p.category === category);
 
 export const mostPickd = menu.filter((p) => p.featured);
 
@@ -618,10 +617,7 @@ export function searchMenu(query: string, items: Product[] = menu) {
   const q = query.trim().toLowerCase();
   if (!q) return items;
   return items.filter((p) =>
-    [p.name, p.description, p.category, ...p.keywords]
-      .join(" ")
-      .toLowerCase()
-      .includes(q),
+    [p.name, p.description, p.category, ...p.keywords].join(" ").toLowerCase().includes(q),
   );
 }
 

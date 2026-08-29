@@ -96,10 +96,7 @@ function MenuPage() {
       </div>
 
       <div className="shell mt-3 flex gap-2">
-        <Pill
-          active={filter === "veg"}
-          onClick={() => setFilter(filter === "veg" ? "all" : "veg")}
-        >
+        <Pill active={filter === "veg"} onClick={() => setFilter(filter === "veg" ? "all" : "veg")}>
           🌱 veg only
         </Pill>
         <Pill
@@ -116,9 +113,7 @@ function MenuPage() {
       {results.length === 0 ? (
         <div className="shell mt-16 text-center">
           <p className="text-lg font-extrabold lowercase">couldn't find that one.</p>
-          <p className="mt-1 text-sm lowercase text-muted-foreground">
-            try another craving.
-          </p>
+          <p className="mt-1 text-sm lowercase text-muted-foreground">try another craving.</p>
         </div>
       ) : (
         <div className="shell mt-5 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4">
