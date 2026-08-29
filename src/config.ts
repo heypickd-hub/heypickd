@@ -8,10 +8,17 @@ export const config = {
   /** Phone number for the tel: link. */
   phoneNumber: "+918939650130",
   instagramUrl: "https://instagram.com/pickd",
-  /** Minimum food order value in rupees. */
-  minimumOrder: 199,
+  /** Minimum food order value in rupees. 0 = no minimum. */
+  minimumOrder: 0,
   /** Fallback hotel/branch when the URL has no /h/<branch> segment. */
   defaultBranch: "Branch 1",
+  /** Alias — the hotel/branch used across features. */
+  hotelBranch: "Branch 1",
+  /** Pickd handling fee added on top of a custom snack combo, in rupees. */
+  comboServiceFee: 15,
+  /** Feature switches. */
+  comboEnabled: true,
+  askPickdEnabled: true,
   /** 24h format, local time. */
   openingTime: "11:00",
   closingTime: "23:30",

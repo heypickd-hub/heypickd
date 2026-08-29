@@ -9,10 +9,21 @@ import {
 } from "react";
 import { getProduct, type Product } from "@/data/menu";
 
+/** A cart-only item that isn't in the menu (e.g. a built snack combo). */
+export interface CustomItem {
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  /** The individual things inside the combo, shown in the cart. */
+  parts: string[];
+}
+
 export interface CartLine {
   id: string;
   qty: number;
   note?: string | undefined;
+  custom?: CustomItem | undefined;
 }
 
 export interface ResolvedLine extends CartLine {
@@ -29,6 +40,7 @@ interface CartValue {
   count: number;
   subtotal: number;
   add: (id: string, qty?: number, note?: string) => void;
+  addCustom: (item: CustomItem, qty?: number) => void;
   setQty: (id: string, qty: number) => void;
   setNote: (id: string, note: string) => void;
   remove: (id: string) => void;
@@ -39,6 +51,22 @@ interface CartValue {
 
 const CartContext = createContext<CartValue | null>(null);
 
+function customToProduct(id: string, custom: CustomItem): Product {
+  return {
+    id,
+    name: custom.name,
+    description: custom.description,
+    price: custom.price,
+    category: "Combos",
+    foodType: "veg",
+    source: "pickd",
+    featured: false,
+    available: true,
+    image: custom.image,
+    keywords: [],
+  };
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [branch, setBranchState] = useState<string | null>(null);
@@ -48,7 +76,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as CartLine[];
-        if (Array.isArray(parsed)) setLines(parsed.filter((l) => getProduct(l.id)));
+        if (Array.isArray(parsed))
+          setLines(parsed.filter((l) => l.custom || getProduct(l.id)));
       }
       setBranchState(localStorage.getItem(BRANCH_KEY));
     } catch {
@@ -73,6 +102,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         );
       }
       return [...prev, { id, qty, note }];
+    });
+  }, []);
+
+  const addCustom = useCallback((item: CustomItem, qty = 1) => {
+    const key = `combo:${item.name}:${item.parts.join("|")}:${item.price}`;
+    setLines((prev) => {
+      const existing = prev.find((l) => l.id === key);
+      if (existing) {
+        return prev.map((l) => (l.id === key ? { ...l, qty: l.qty + qty } : l));
+      }
+      return [...prev, { id: key, qty, custom: item }];
     });
   }, []);
 
@@ -107,7 +147,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     () =>
       lines
         .map((line) => {
-          const product = getProduct(line.id);
+          const product = line.custom
+            ? customToProduct(line.id, line.custom)
+            : getProduct(line.id);
           if (!product) return null;
           return { ...line, product, lineTotal: product.price * line.qty };
         })
@@ -122,6 +164,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       count: items.reduce((n, l) => n + l.qty, 0),
       subtotal: items.reduce((n, l) => n + l.lineTotal, 0),
       add,
+      addCustom,
       setQty,
       setNote,
       remove,
@@ -129,7 +172,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       branch,
       setBranch,
     }),
-    [lines, items, add, setQty, setNote, remove, clear, branch, setBranch],
+    [lines, items, add, addCustom, setQty, setNote, remove, clear, branch, setBranch],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -9,10 +9,10 @@ export interface OrderDetails {
 }
 
 export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) {
-  const lines = items.map(
-    (l) =>
-      `• ${l.qty} × ${l.product.name} — ₹${l.lineTotal}${l.note ? ` (${l.note})` : ""}`,
-  );
+  const lines = items.flatMap((l) => {
+    const head = `• ${l.qty} × ${l.product.name} — ₹${l.lineTotal}${l.note ? ` (${l.note})` : ""}`;
+    return l.custom ? [head, `   ↳ ${l.custom.parts.join(", ")}`] : [head];
+  });
   const total = items.reduce((n, l) => n + l.lineTotal, 0);
 
   return [
@@ -29,6 +29,31 @@ export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) 
     ...(details.notes ? [`notes: ${details.notes}`] : []),
     "",
     "pickd for me, please 🧡",
+  ].join("\n");
+}
+
+export interface AskRequest {
+  item: string;
+  quantity?: string | undefined;
+  brand?: string | undefined;
+  room: string;
+  hotel: string;
+  link?: string | undefined;
+}
+
+export function buildAskMessage(req: AskRequest) {
+  return [
+    "hey pickd 👋",
+    "",
+    "i need:",
+    `item: ${req.item}`,
+    ...(req.quantity ? [`quantity: ${req.quantity}`] : []),
+    ...(req.brand ? [`preferred brand/shop: ${req.brand}`] : []),
+    `hotel/branch: ${req.hotel}`,
+    `room: ${req.room}`,
+    ...(req.link ? [`reference: ${req.link}`] : []),
+    "",
+    "please check and send me the final price.",
   ].join("\n");
 }
 
