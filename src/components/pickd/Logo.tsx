@@ -1,12 +1,12 @@
-import mascotAsset from "@/assets/pickd-mascot.png.asset.json";
-import wordmarkAsset from "@/assets/pickd-wordmark.png.asset.json";
+import mascotImg from "@/assets/pickd-mascot.png";
+import wordmarkImg from "@/assets/pickd-wordmark.png";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
       <img
-        src={wordmarkAsset.url}
+        src={wordmarkImg}
         alt="pickd"
         width={1329}
         height={941}
@@ -19,7 +19,7 @@ export function Logo({ className }: { className?: string }) {
 export function Mascot({ className }: { className?: string }) {
   return (
     <img
-      src={mascotAsset.url}
+      src={mascotImg}
       alt="pickd mascot"
       width={512}
       height={512}
