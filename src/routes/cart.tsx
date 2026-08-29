@@ -78,6 +78,11 @@ function CartPage() {
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     ₹{line.product.price} each
                   </p>
+                  {line.custom && (
+                    <p className="mt-1.5 text-xs text-muted-foreground italic lowercase">
+                      {line.custom.parts.join(" + ")}
+                    </p>
+                  )}
 
                   <div className="mt-2 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-1 rounded-full border border-border p-0.5">

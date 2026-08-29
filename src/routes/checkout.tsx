@@ -112,11 +112,18 @@ function CheckoutPage() {
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-4">
         {items.map((line) => (
-          <div key={line.id} className="flex justify-between py-1 text-sm">
-            <span className="lowercase">
-              {line.qty} × {line.product.name}
-            </span>
-            <span className="font-semibold">₹{line.lineTotal}</span>
+          <div key={line.id} className="py-1">
+            <div className="flex justify-between text-sm">
+              <span className="lowercase">
+                {line.qty} × {line.product.name}
+              </span>
+              <span className="font-semibold">₹{line.lineTotal}</span>
+            </div>
+            {line.custom && (
+              <p className="text-[11px] text-muted-foreground italic lowercase pl-3">
+                ↳ {line.custom.parts.join(" + ")}
+              </p>
+            )}
           </div>
         ))}
         <div className="mt-2 flex justify-between border-t border-border pt-3 text-base font-extrabold">

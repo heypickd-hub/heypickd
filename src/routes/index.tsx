@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Phone } from "lucide-react";
+import { ArrowRight, Phone, Utensils, Sparkles, MessageSquare } from "lucide-react";
 import { useState } from "react";
 import { BannerRail } from "@/components/pickd/BannerRail";
 import { Mascot } from "@/components/pickd/Logo";
@@ -9,6 +9,10 @@ import { StatusBanner } from "@/components/pickd/StatusBanner";
 import { config, isOpenNow } from "@/config";
 import { byCategory, menu, mostPickd, type Product } from "@/data/menu";
 import { useFoodFilter } from "@/lib/veg-filter";
+import { ComboBuilder } from "@/components/pickd/ComboBuilder";
+import { SnackCombos } from "@/components/pickd/SnackCombos";
+import { AskPickdSection, AskPickdModal } from "@/components/pickd/AskPickd";
+import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +37,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const [active, setActive] = useState<Product | null>(null);
+  const [askOpen, setAskOpen] = useState(false);
   const open = isOpenNow();
   const { filter } = useFoodFilter();
 
@@ -96,6 +101,70 @@ function Home() {
         </div>
       </section>
 
+      {/* 3 Primary Action Cards */}
+      <section className="shell mt-6 reveal">
+        <div className="grid gap-3.5 sm:grid-cols-3">
+          {/* Card 1: Order Food */}
+          <Link
+            to="/menu"
+            search={{ q: "", cat: "all" }}
+            className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-card p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-butter/10 text-butter shrink-0">
+                <Utensils className="h-5 w-5" />
+              </span>
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-extrabold lowercase text-foreground leading-snug">order food</h3>
+                <p className="text-xs text-muted-foreground lowercase">curated nearby favourites</p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground/75 shrink-0" />
+          </Link>
+
+          {/* Card 2: Build a Combo */}
+          <a
+            href="#build-combo"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("build-combo")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-card p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-butter/10 text-butter shrink-0">
+                <Sparkles className="h-5 w-5" />
+              </span>
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-extrabold lowercase text-foreground leading-snug">build a combo</h3>
+                <p className="text-xs text-muted-foreground lowercase">snacks, sweets & drinks</p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground/75 shrink-0" />
+          </a>
+
+          {/* Card 3: Ask Pickd */}
+          <button
+            onClick={() => {
+              track("ask_pickd_clicked");
+              setAskOpen(true);
+            }}
+            className="text-left flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-card p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] w-full"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-butter/10 text-butter shrink-0">
+                <MessageSquare className="h-5 w-5" />
+              </span>
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-extrabold lowercase text-foreground leading-snug">ask pickd</h3>
+                <p className="text-xs text-muted-foreground lowercase">tell us what you need</p>
+              </div>
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground/75 shrink-0" />
+          </button>
+        </div>
+      </section>
+
       <BannerRail />
 
       <Section
@@ -105,6 +174,25 @@ function Home() {
         onOpen={setActive}
         seeAll={{ cat: "most-pickd" }}
       />
+
+      {/* Build Your Combo Section */}
+      {config.comboEnabled && (
+        <section id="build-combo" className="reveal mt-10">
+          <div className="shell">
+            <h2 className="text-xl font-extrabold lowercase sm:text-2xl">build your combo</h2>
+            <p className="mt-0.5 text-sm lowercase text-muted-foreground">
+              pick your snacks. make it yours.
+            </p>
+            <div className="mt-4">
+              <ComboBuilder />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Snacks & Chill Section */}
+      <SnackCombos />
+
       <Section
         title="dinner under ₹199"
         subtitle="easy on the wallet, big on taste."
@@ -161,7 +249,11 @@ function Home() {
         seeAll={{ cat: "Sweet Cravings" }}
       />
 
+      {/* Ask Pickd Section */}
+      {config.askPickdEnabled && <AskPickdSection />}
+
       <ProductSheet product={active} onClose={() => setActive(null)} />
+      <AskPickdModal open={askOpen} onOpenChange={setAskOpen} />
     </div>
   );
 }

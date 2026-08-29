@@ -6,7 +6,7 @@ export const config = {
   /** WhatsApp number in international format, digits only. */
   whatsappNumber: "918939650130",
   /** Phone number for the tel: link. */
-  phoneNumber: "+918939650130",
+  phoneNumber: "+916385349075",
   instagramUrl: "https://instagram.com/pickd",
   /** Minimum food order value in rupees. 0 = no minimum. */
   minimumOrder: 0,
