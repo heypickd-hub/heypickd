@@ -1,13 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import banner1 from "@/assets/banner-1.png.asset.json";
-import banner2 from "@/assets/banner-2.png.asset.json";
-import banner3 from "@/assets/banner-3.png.asset.json";
+import banner1 from "@/assets/banner-1.png";
+import banner2 from "@/assets/banner-2.png";
+import banner3 from "@/assets/banner-3.png";
 
 const banners = [
-  { src: banner1.url, alt: "good food, pickd for you — food, snacks & drinks delivered to your stay" },
-  { src: banner2.url, alt: "order from nearby favorites — fresh meals, snacks and drinks" },
-  { src: banner3.url, alt: "scan. browse. order. — simple ordering for hotel guests" },
+  { src: banner1, alt: "good food, pickd for you — food, snacks & drinks delivered to your stay" },
+  { src: banner2, alt: "order from nearby favorites — fresh meals, snacks and drinks" },
+  { src: banner3, alt: "scan. browse. order. — simple ordering for hotel guests" },
 ];
 
 const AUTO_DELAY_MS = 4000;
