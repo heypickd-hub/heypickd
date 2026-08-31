@@ -10,58 +10,58 @@ export function Footer() {
 
   return (
     <footer
-      className={`mt-12 border-t border-border/60 pt-8 sm:pt-10 ${
-        hasCartBar ? "pb-28 sm:pb-24" : "pb-8 sm:pb-10"
+      className={`mt-6 sm:mt-10 border-t border-border/60 pt-4 sm:pt-8 ${
+        hasCartBar ? "pb-20 sm:pb-24" : "pb-4 sm:pb-8"
       }`}
     >
-      <div className="shell flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="shell flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6">
         {/* Brand Column */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           <Logo />
-          <p className="text-xs sm:text-sm lowercase text-muted-foreground">
+          <p className="text-[11px] sm:text-sm lowercase text-muted-foreground">
             {config.brand.tagline}
           </p>
         </div>
 
         {/* Links & Action Icons Column */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           <Link
             to="/menu"
             search={{ q: "", cat: "all" }}
-            className="inline-flex min-h-[44px] items-center text-xs sm:text-sm font-semibold lowercase text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
+            className="inline-flex items-center text-xs sm:text-sm font-semibold lowercase text-muted-foreground hover:text-foreground transition-colors px-1 py-1"
           >
             menu
           </Link>
           <Link
             to="/combo-builder"
-            className="inline-flex min-h-[44px] items-center text-xs sm:text-sm font-semibold lowercase text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
+            className="inline-flex items-center text-xs sm:text-sm font-semibold lowercase text-muted-foreground hover:text-foreground transition-colors px-1 py-1"
           >
             combo builder
           </Link>
 
-          <div className="flex items-center gap-2 pl-1">
+          <div className="flex items-center gap-1.5 pl-1">
             <a
               href={`https://wa.me/${config.whatsappNumber}`}
               target="_blank"
               rel="noreferrer"
               aria-label="whatsapp"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border/80 bg-card p-2.5 transition-colors hover:bg-secondary active:scale-95"
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-border/80 bg-card p-1.5 transition-colors hover:bg-secondary active:scale-95"
             >
-              <MessageCircle className="h-4 w-4 text-whatsapp" />
+              <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-whatsapp" />
             </a>
             <a
               href={`tel:${config.phoneNumber}`}
               aria-label="call pickd"
-              className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border/80 bg-card p-2.5 transition-colors hover:bg-secondary active:scale-95"
+              className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-border/80 bg-card p-1.5 transition-colors hover:bg-secondary active:scale-95"
             >
-              <Phone className="h-4 w-4" />
+              <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
           </div>
         </div>
       </div>
 
       {/* Copyright & Disclaimer Row */}
-      <div className="shell mt-6 border-t border-border/40 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[11px] sm:text-xs lowercase text-muted-foreground/80">
+      <div className="shell mt-3 sm:mt-6 border-t border-border/40 pt-2.5 sm:pt-4 flex flex-row items-center justify-between gap-2 text-[10px] sm:text-xs lowercase text-muted-foreground/80">
         <p>© {new Date().getFullYear()} pickd. all rights reserved.</p>
         <p>menu availability may vary.</p>
       </div>
