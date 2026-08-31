@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageCircle, Building2, MapPin } from "lucide-react";
 import { Mascot } from "./Logo";
 import {
   Dialog,
@@ -8,11 +8,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { config } from "@/config";
+import { PROPERTIES, findProperty, type Property } from "@/data/properties";
 import { buildAskMessage, whatsappUrl } from "@/lib/whatsapp";
 import { track } from "@/lib/analytics";
 import { useCart } from "@/lib/cart";
-import { cn } from "@/lib/utils";
 
 export function AskPickdSection() {
   const [open, setOpen] = useState(false);
@@ -65,7 +64,7 @@ export function AskPickdSection() {
 
             <button
               onClick={handleOpen}
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] z-10 shrink-0"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] z-10 shrink-0 cursor-pointer"
             >
               <MessageCircle className="h-4 w-4 fill-current text-primary-foreground" />
               ask on WhatsApp
@@ -96,22 +95,44 @@ export function AskPickdModal({
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
   const [room, setRoom] = useState("");
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string>(() => {
+    const resolved = findProperty(branch);
+    return resolved ? resolved.id : PROPERTIES[0]!.id;
+  });
   const [link, setLink] = useState("");
+
+  useEffect(() => {
+    if (branch) {
+      const resolved = findProperty(branch);
+      if (resolved) {
+        setSelectedPropertyId(resolved.id);
+      }
+    }
+  }, [branch]);
+
+  const currentProperty: Property =
+    PROPERTIES.find((p) => p.id === selectedPropertyId) || PROPERTIES[0]!;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!item.trim() || !room.trim()) return;
+    if (!item.trim() || !room.trim() || !currentProperty) return;
 
     const message = buildAskMessage({
-      item,
-      quantity: quantity || undefined,
-      brand: brand || undefined,
-      room,
-      hotel: branch || config.hotelBranch,
-      link: link || undefined,
+      item: item.trim(),
+      quantity: quantity.trim() || undefined,
+      brand: brand.trim() || undefined,
+      room: room.trim(),
+      propertyName: currentProperty.name,
+      propertyLocation: currentProperty.location,
+      link: link.trim() || undefined,
     });
 
-    track("ask_pickd_sent", { item, room });
+    track("ask_pickd_sent", {
+      item,
+      room,
+      hotel: currentProperty.name,
+      location: currentProperty.location,
+    });
 
     // Reset state & close
     setItem("");
@@ -126,7 +147,7 @@ export function AskPickdModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md rounded-3xl p-6 border-border/70 bg-card">
+      <DialogContent className="max-w-md rounded-3xl p-6 border-border/70 bg-card max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-left space-y-1">
           <DialogTitle className="text-xl font-extrabold lowercase">ask pickd</DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground lowercase">
@@ -174,9 +195,40 @@ export function AskPickdModal({
                 required
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
-                placeholder="e.g. 302"
+                placeholder="e.g. 302 or 302A"
                 className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none focus:border-butter"
               />
+            </div>
+          </div>
+
+          {/* Hotel Selection */}
+          <div className="space-y-1">
+            <label htmlFor="ask-hotel" className="text-xs font-bold lowercase text-foreground">
+              hotel <span className="text-destructive">*</span>
+            </label>
+            <div className="relative">
+              <select
+                id="ask-hotel"
+                value={selectedPropertyId}
+                onChange={(e) => setSelectedPropertyId(e.target.value)}
+                className="w-full appearance-none rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none focus:border-butter pr-9 cursor-pointer"
+              >
+                {PROPERTIES.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} — {p.location}
+                  </option>
+                ))}
+              </select>
+              <Building2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Registered Location Auto-filled */}
+          <div className="space-y-1">
+            <span className="text-xs font-bold lowercase text-foreground">location</span>
+            <div className="flex items-center gap-2 rounded-xl border border-border/80 bg-secondary/50 px-3.5 py-2.5 text-sm text-foreground">
+              <MapPin className="h-4 w-4 text-butter shrink-0" />
+              <span className="font-semibold">{currentProperty.location}</span>
             </div>
           </div>
 
@@ -215,7 +267,7 @@ export function AskPickdModal({
             <button
               type="submit"
               disabled={!item.trim() || !room.trim()}
-              className="w-full rounded-full bg-primary py-3.5 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-full bg-primary py-3.5 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               send request
             </button>

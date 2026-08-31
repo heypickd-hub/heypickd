@@ -40,7 +40,8 @@ export interface AskRequest {
   quantity?: string | undefined;
   brand?: string | undefined;
   room: string;
-  hotel: string;
+  propertyName: string;
+  propertyLocation: string;
   link?: string | undefined;
 }
 
@@ -52,8 +53,9 @@ export function buildAskMessage(req: AskRequest) {
     `item: ${req.item}`,
     ...(req.quantity ? [`quantity: ${req.quantity}`] : []),
     ...(req.brand ? [`preferred brand/shop: ${req.brand}`] : []),
-    `hotel/branch: ${req.hotel}`,
-    `room: ${req.room}`,
+    `room: ${req.room} 🛎️`,
+    `hotel: ${req.propertyName} 🏨`,
+    `location: ${req.propertyLocation} 📍`,
     ...(req.link ? [`reference: ${req.link}`] : []),
     "",
     "please check and send me the final price.",
