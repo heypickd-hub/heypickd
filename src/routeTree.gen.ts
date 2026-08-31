@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ComboBuilderRouteImport } from './routes/combo-builder'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as SentRouteImport } from './routes/sent'
 import { Route as HBranchRouteImport } from './routes/h.$branch'
@@ -29,6 +30,11 @@ const CartRoute = CartRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComboBuilderRoute = ComboBuilderRouteImport.update({
+  id: '/combo-builder',
+  path: '/combo-builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenuRoute = MenuRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/combo-builder': typeof ComboBuilderRoute
   '/menu': typeof MenuRoute
   '/sent': typeof SentRoute
   '/h/$branch': typeof HBranchRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/combo-builder': typeof ComboBuilderRoute
   '/menu': typeof MenuRoute
   '/sent': typeof SentRoute
   '/h/$branch': typeof HBranchRoute
@@ -68,23 +76,46 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/combo-builder': typeof ComboBuilderRoute
   '/menu': typeof MenuRoute
   '/sent': typeof SentRoute
   '/h/$branch': typeof HBranchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/combo-builder'
+    | '/menu'
+    | '/sent'
+    | '/h/$branch'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
+  to:
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/combo-builder'
+    | '/menu'
+    | '/sent'
+    | '/h/$branch'
   id:
-    '__root__' | '/' | '/cart' | '/checkout' | '/menu' | '/sent' | '/h/$branch'
+    | '__root__'
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/combo-builder'
+    | '/menu'
+    | '/sent'
+    | '/h/$branch'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
+  ComboBuilderRoute: typeof ComboBuilderRoute
   MenuRoute: typeof MenuRoute
   SentRoute: typeof SentRoute
   HBranchRoute: typeof HBranchRoute
@@ -111,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/combo-builder': {
+      id: '/combo-builder'
+      path: '/combo-builder'
+      fullPath: '/combo-builder'
+      preLoaderRoute: typeof ComboBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menu': {
@@ -141,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
+  ComboBuilderRoute: ComboBuilderRoute,
   MenuRoute: MenuRoute,
   SentRoute: SentRoute,
   HBranchRoute: HBranchRoute,

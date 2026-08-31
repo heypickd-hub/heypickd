@@ -15,6 +15,15 @@ import friedRice from "@/assets/food-friedrice.jpg";
 import drinks from "@/assets/food-drinks.jpg";
 import grill from "@/assets/food-grill.jpg";
 
+import foodP1 from "@/assets/food-p1-hyderabadi-dum.png";
+import foodP2 from "@/assets/food-p2-chicken-dum.png";
+import foodP3 from "@/assets/food-p3-biryani-chicken65.png";
+import foodP4 from "@/assets/food-p4-classic-biryani.png";
+import foodP5 from "@/assets/food-p5-boneless-biryani.png";
+import foodP6 from "@/assets/food-p6-shawarma-classic.png";
+import foodP7 from "@/assets/food-p7-shawarma-value.png";
+import foodP8 from "@/assets/food-p8-crispy-burger.png";
+
 export type FoodType = "veg" | "non-veg";
 
 export type Category =
@@ -27,7 +36,8 @@ export type Category =
   | "South Indian Dinner"
   | "Drinks & Shakes"
   | "Sweet Cravings"
-  | "Combos";
+  | "Combos"
+  | "Snacks & Chocolates";
 
 export interface Product {
   id: string;
@@ -57,9 +67,10 @@ export const categories: { id: Category | "most-pickd"; label: string; emoji: st
   { id: "South Indian Dinner", label: "south indian", emoji: "🥞" },
   { id: "Drinks & Shakes", label: "drinks", emoji: "🥤" },
   { id: "Sweet Cravings", label: "sweet", emoji: "🍰" },
+  { id: "Snacks & Chocolates", label: "snacks & chocolates", emoji: "🍿" },
 ];
 
-export const menu: Product[] = [
+const baseMenu: Product[] = [
   {
     id: "p1",
     name: "Hyderabadi Chicken Dum Biriyani",
@@ -70,7 +81,7 @@ export const menu: Product[] = [
     source: "Biriyani Zone's",
     featured: true,
     available: true,
-    image: biryani,
+    image: foodP1,
     badge: "most pickd",
     keywords: ["biryani", "biriyani", "rice", "chicken", "hyderabadi", "dum"],
   },
@@ -84,7 +95,7 @@ export const menu: Product[] = [
     source: "SS Hyderabad Biryani",
     featured: true,
     available: true,
-    image: biryani,
+    image: foodP2,
     badge: "most pickd",
     keywords: ["biryani", "rice", "chicken", "dum", "hyderabad"],
   },
@@ -98,7 +109,7 @@ export const menu: Product[] = [
     source: "Marhaba Biriyani",
     featured: true,
     available: true,
-    image: friedChicken,
+    image: foodP3,
     badge: "combo",
     keywords: ["biryani", "combo", "chicken 65", "rice", "meal"],
   },
@@ -112,7 +123,7 @@ export const menu: Product[] = [
     source: "Marhaba Biriyani",
     featured: true,
     available: true,
-    image: biryani,
+    image: foodP4,
     badge: "value pick",
     keywords: ["biryani", "rice", "chicken", "cheap", "dinner"],
   },
@@ -126,7 +137,7 @@ export const menu: Product[] = [
     source: "Biriyani Zone's",
     featured: true,
     available: true,
-    image: biryani,
+    image: foodP5,
     keywords: ["biryani", "boneless", "chicken", "rice", "hyderabadi"],
   },
   {
@@ -139,7 +150,7 @@ export const menu: Product[] = [
     source: "SS Hyderabad Biryani",
     featured: true,
     available: true,
-    image: shawarma,
+    image: foodP6,
     badge: "classic",
     keywords: ["shawarma", "roll", "wrap", "chicken"],
   },
@@ -153,7 +164,7 @@ export const menu: Product[] = [
     source: "Marhaba Biriyani",
     featured: true,
     available: true,
-    image: shawarma,
+    image: foodP7,
     badge: "value pick",
     keywords: ["shawarma", "roll", "wrap", "chicken", "late night"],
   },
@@ -167,7 +178,7 @@ export const menu: Product[] = [
     source: "LOC Square Cafe",
     featured: true,
     available: true,
-    image: burger,
+    image: foodP8,
     badge: "most pickd",
     keywords: ["burger", "chicken", "crispy", "fried"],
   },
@@ -604,6 +615,56 @@ export const menu: Product[] = [
     keywords: ["pizza", "mini", "chicken", "quick meal"],
   },
 ];
+
+import { snackItems } from "./snacks";
+
+const mappedSnacks: Product[] = snackItems.map((s) => {
+  let category: Category = "Veg Picks";
+  const keywords: string[] = [s.name.toLowerCase(), s.kind];
+
+  if (
+    s.kind === "crunch" ||
+    s.name.toLowerCase().includes("chips") ||
+    s.name.toLowerCase().includes("biscuits") ||
+    s.name.toLowerCase().includes("cookies")
+  ) {
+    category = "Snacks & Chocolates";
+    keywords.push("snack", "chips", "crisp");
+  } else if (
+    s.kind === "sweet" ||
+    s.name.toLowerCase().includes("chocolate") ||
+    s.name.toLowerCase().includes("oreo")
+  ) {
+    category = "Snacks & Chocolates";
+    keywords.push("sweet", "chocolate", "biscuit", "cookie");
+  } else if (
+    s.kind === "drink" ||
+    s.name.toLowerCase().includes("water") ||
+    s.name.toLowerCase().includes("drink")
+  ) {
+    category = "Drinks & Shakes";
+    keywords.push("drink", "soda", "cold", "water");
+  } else {
+    category = "Snacks & Chocolates";
+    keywords.push("snack");
+  }
+
+  return {
+    id: s.id,
+    name: s.name,
+    description: `${s.name} - ready to pick.`,
+    price: s.price,
+    category,
+    foodType: "veg",
+    source: "pickd store",
+    featured: false,
+    available: true,
+    image: s.image,
+    keywords,
+  };
+});
+
+export const menu: Product[] = [...baseMenu, ...mappedSnacks];
 
 export const getProduct = (id: string) => menu.find((p) => p.id === id);
 

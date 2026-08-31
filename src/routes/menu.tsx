@@ -46,13 +46,160 @@ function MenuPage() {
 
   const results = useMemo(() => {
     let items = menu;
-    if (cat === "most-pickd") items = items.filter((p) => p.featured);
-    else if (cat !== "all") items = items.filter((p) => p.category === cat);
-    if (filter === "veg") items = items.filter((p) => p.foodType === "veg");
-    if (filter === "nonveg") items = items.filter((p) => p.foodType === "non-veg");
-    if (underBudget) items = items.filter((p) => p.price <= 199);
+
+    // Category mapping
+    if (cat === "most-pickd") {
+      items = items.filter((p) => p.featured);
+    } else if (cat === "non-veg-favourites") {
+      items = items.filter((p) => p.foodType === "non-veg");
+    } else if (cat === "veg-favourites") {
+      items = items.filter((p) => p.foodType === "veg");
+    } else if (cat === "burgers-wraps-quick-bites") {
+      items = items.filter(
+        (p) =>
+          p.category === "Burgers & Wraps" ||
+          p.keywords.includes("pizza") ||
+          p.name.toLowerCase().includes("pizza"),
+      );
+    } else if (cat === "crispy-grill-custom") {
+      items = items.filter(
+        (p) => p.category === "Crispy & Grill" || p.category === "Shawarma & Grill",
+      );
+    } else if (cat === "dinner-under-199") {
+      items = items.filter(
+        (p) =>
+          p.price <= 199 &&
+          p.category !== "Drinks & Shakes" &&
+          p.category !== "Sweet Cravings" &&
+          p.category !== "Snacks & Chocolates",
+      );
+    } else if (cat === "drinks-coffee") {
+      items = items.filter((p) => {
+        const name = p.name.toLowerCase();
+        const keywords = p.keywords;
+        return (
+          (p.category === "Drinks & Shakes" &&
+            (name.includes("coffee") ||
+              name.includes("tea") ||
+              name.includes("water") ||
+              name.includes("juice") ||
+              name.includes("cola") ||
+              name.includes("soda") ||
+              keywords.includes("coffee") ||
+              keywords.includes("water") ||
+              keywords.includes("soda"))) ||
+          (p.id.startsWith("s-") &&
+            ((s) =>
+              s.name === "Coca-Cola" ||
+              s.name === "Sprite" ||
+              s.name === "Fanta" ||
+              s.name === "Water")(p)) ||
+          (p.id.startsWith("x-") && ((s) => s.name === "water" || s.name === "extra drink")(p))
+        );
+      });
+    } else if (cat === "shakes-coolers") {
+      items = items.filter((p) => {
+        const name = p.name.toLowerCase();
+        return (
+          p.category === "Drinks & Shakes" &&
+          (name.includes("shake") ||
+            name.includes("mojito") ||
+            name.includes("falooda") ||
+            name.includes("cooler") ||
+            name.includes("smoothie"))
+        );
+      });
+    } else if (cat === "biryani-rice" || cat === "Biryani & Rice") {
+      items = items.filter((p) => p.category === "Biryani & Rice");
+    } else if (cat === "south-indian" || cat === "South Indian Dinner") {
+      items = items.filter((p) => p.category === "South Indian Dinner");
+    } else if (cat === "snacks-chocolates" || cat === "Snacks & Chocolates") {
+      items = items.filter((p) => p.category === "Snacks & Chocolates");
+    } else if (cat === "sweet-cravings" || cat === "Sweet Cravings") {
+      items = items.filter((p) => p.category === "Sweet Cravings");
+    } else if (cat !== "all") {
+      items = items.filter((p) => p.category === cat);
+    }
+
+    // Global food type filter (veg / non-veg)
+    if (filter === "veg") {
+      items = items.filter((p) => p.foodType === "veg");
+    } else if (filter === "nonveg") {
+      items = items.filter((p) => p.foodType === "non-veg");
+    }
+
+    // Local under-budget filter
+    if (underBudget) {
+      items = items.filter((p) => p.price <= 199);
+    }
+
     return searchMenu(q, items);
   }, [q, cat, filter, underBudget]);
+
+  const pageTitle = useMemo(() => {
+    switch (cat) {
+      case "most-pickd":
+        return "most pickd 🔥";
+      case "non-veg-favourites":
+        return "non-veg favourites 🍗";
+      case "veg-favourites":
+        return "veg favourites 🌱";
+      case "Biryani & Rice":
+      case "biryani-rice":
+        return "biryani & rice 🍚";
+      case "burgers-wraps-quick-bites":
+        return "burgers, wraps & quick bites 🍔";
+      case "crispy-grill-custom":
+        return "crispy & grill 🍗";
+      case "South Indian Dinner":
+      case "south-indian":
+        return "south indian favourites 🥞";
+      case "Snacks & Chocolates":
+      case "snacks-chocolates":
+        return "snacks & chocolates 🍿";
+      case "dinner-under-199":
+        return "dinner under ₹199 💸";
+      case "drinks-coffee":
+        return "drinks & coffee 🥤";
+      case "shakes-coolers":
+        return "shakes & coolers 🥤";
+      case "Sweet Cravings":
+      case "sweet-cravings":
+        return "sweet cravings 🍰";
+      default:
+        return "what are you craving?";
+    }
+  }, [cat]);
+
+  const isPillActive = (pillId: string) => {
+    if (cat === pillId) return true;
+    if ((cat === "biryani-rice" || cat === "Biryani & Rice") && pillId === "Biryani & Rice")
+      return true;
+    if (cat === "burgers-wraps-quick-bites" && pillId === "Burgers & Wraps") return true;
+    if (
+      cat === "crispy-grill-custom" &&
+      (pillId === "Crispy & Grill" || pillId === "Shawarma & Grill")
+    )
+      return true;
+    if (
+      (cat === "south-indian" || cat === "South Indian Dinner") &&
+      pillId === "South Indian Dinner"
+    )
+      return true;
+    if (
+      (cat === "snacks-chocolates" || cat === "Snacks & Chocolates") &&
+      pillId === "Snacks & Chocolates"
+    )
+      return true;
+    if ((cat === "sweet-cravings" || cat === "Sweet Cravings") && pillId === "Sweet Cravings")
+      return true;
+    if (cat === "veg-favourites" && pillId === "Veg Picks") return true;
+    if ((cat === "drinks-coffee" || cat === "shakes-coolers") && pillId === "Drinks & Shakes")
+      return true;
+    return false;
+  };
+
+  const isAllActive = cat === "all" || cat === "non-veg-favourites" || cat === "dinner-under-199";
 
   const setSearch = (next: Partial<MenuSearch>) =>
     navigate({ search: (prev) => ({ ...prev, ...next }) });
@@ -60,7 +207,7 @@ function MenuPage() {
   return (
     <div className="pb-24 pt-6">
       <div className="shell">
-        <h1 className="text-2xl font-extrabold lowercase">what are you craving?</h1>
+        <h1 className="text-2xl font-extrabold lowercase">{pageTitle}</h1>
 
         <div className="relative mt-4">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -85,11 +232,11 @@ function MenuPage() {
       </div>
 
       <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto px-5 lg:mx-auto lg:max-w-[1240px]">
-        <Pill active={cat === "all"} onClick={() => setSearch({ cat: "all" })}>
+        <Pill active={isAllActive} onClick={() => setSearch({ cat: "all" })}>
           all
         </Pill>
         {categories.map((c) => (
-          <Pill key={c.id} active={cat === c.id} onClick={() => setSearch({ cat: c.id })}>
+          <Pill key={c.id} active={isPillActive(c.id)} onClick={() => setSearch({ cat: c.id })}>
             {c.emoji} {c.label}
           </Pill>
         ))}
@@ -116,7 +263,7 @@ function MenuPage() {
           <p className="mt-1 text-sm lowercase text-muted-foreground">try another craving.</p>
         </div>
       ) : (
-        <div className="shell mt-5 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4">
+        <div className="shell mt-5 grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {results.map((p) => (
             <ProductCard key={p.id} product={p} onOpen={setActive} />
           ))}

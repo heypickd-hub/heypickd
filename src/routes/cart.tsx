@@ -143,7 +143,7 @@ function CartPage() {
         {upsells.length > 0 && (
           <div className="mt-8">
             <h2 className="text-lg font-extrabold lowercase">goes well with 👀</h2>
-            <div className="mt-3 grid grid-cols-2 gap-3.5 md:grid-cols-4">
+            <div className="mt-3 grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {upsells.map((p) => (
                 <ProductCard key={p.id} product={p} onOpen={setActive} />
               ))}

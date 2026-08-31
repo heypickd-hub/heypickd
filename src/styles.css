@@ -118,7 +118,36 @@
   margin-inline: auto;
   width: 100%;
   max-width: 1240px;
-  padding-inline: 1.25rem;
+  padding-inline: 1rem;
+  @media (min-width: 640px) {
+    padding-inline: 1.25rem;
+  }
+}
+
+@utility product-row {
+  --visible-cards: 2;
+  --card-gap: 10px;
+  display: flex;
+  align-items: stretch;
+  gap: var(--card-gap);
+  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+
+  @media (min-width: 768px) {
+    --visible-cards: 3;
+    --card-gap: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    --visible-cards: 4;
+  }
+}
+
+@utility product-row-item {
+  flex: 0 0 calc((100% - ((var(--visible-cards) - 1) * var(--card-gap))) / var(--visible-cards)) !important;
+  width: calc((100% - ((var(--visible-cards) - 1) * var(--card-gap))) / var(--visible-cards)) !important;
+  min-width: 0 !important;
+  scroll-snap-align: start;
 }
 
 @utility reveal {
