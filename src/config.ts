@@ -11,9 +11,9 @@ export const config = {
   /** Minimum food order value in rupees. 0 = no minimum. */
   minimumOrder: 0,
   /** Fallback hotel/branch when the URL has no /h/<branch> segment. */
-  defaultBranch: "Branch 1",
+  defaultBranch: "RedStone Hotel",
   /** Alias — the hotel/branch used across features. */
-  hotelBranch: "Branch 1",
+  hotelBranch: "RedStone Hotel",
   /** Pickd handling fee added on top of a custom snack combo, in rupees. */
   comboServiceFee: 15,
   /** Feature switches. */

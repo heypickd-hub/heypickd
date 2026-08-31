@@ -7,22 +7,22 @@ export interface Property {
 
 export const PROPERTIES: Property[] = [
   {
+    id: "redstone-nungambakkam",
+    name: "RedStone Hotel",
+    location: "Nungambakkam, Chennai",
+    slug: "redstone-nungambakkam",
+  },
+  {
+    id: "redstone-tnagar",
+    name: "RedStone Service Apt",
+    location: "T. Nagar, Chennai",
+    slug: "redstone-tnagar",
+  },
+  {
     id: "redfox-tnagar",
-    name: "RedFox Hotel T. Nagar",
+    name: "RedFox Hotel",
     location: "T. Nagar, Chennai",
     slug: "redfox-tnagar",
-  },
-  {
-    id: "redfox-omr",
-    name: "RedFox Hotel OMR",
-    location: "OMR, Kanchipuram, Chennai",
-    slug: "redfox-omr",
-  },
-  {
-    id: "pickd-hub-central",
-    name: "Pickd Hub Central",
-    location: "Central Stay, Chennai",
-    slug: "pickd-hub-central",
   },
 ];
 
@@ -36,7 +36,7 @@ export function findProperty(query?: string | null): Property | undefined {
   );
   if (direct) return direct;
 
-  // 2. Name contains or slug converted match (e.g. "Branch 1", "T. Nagar")
+  // 2. Loose match against name or location
   const nameMatch = PROPERTIES.find(
     (p) =>
       p.name.toLowerCase().includes(clean) ||
@@ -45,7 +45,12 @@ export function findProperty(query?: string | null): Property | undefined {
   );
   if (nameMatch) return nameMatch;
 
-  // 3. Fallback to default first property if unknown branch
+  // 3. Aliases like branch-1, branch-2, branch-3
+  if (clean.includes("1")) return PROPERTIES[0];
+  if (clean.includes("2")) return PROPERTIES[1];
+  if (clean.includes("3")) return PROPERTIES[2];
+
+  // Default to first property
   return PROPERTIES[0];
 }
 
