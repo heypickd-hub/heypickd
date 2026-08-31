@@ -2,10 +2,11 @@ import { config } from "@/config";
 import type { ResolvedLine } from "@/lib/cart";
 
 export interface OrderDetails {
-  name: string;
-  room: string;
+  guestName: string;
+  roomNumber: string;
+  propertyName: string;
+  propertyLocation: string;
   notes?: string | undefined;
-  hotel: string;
 }
 
 export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) {
@@ -14,6 +15,7 @@ export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) 
     return l.custom ? [head, `   ↳ ${l.custom.parts.join(", ")}`] : [head];
   });
   const total = items.reduce((n, l) => n + l.lineTotal, 0);
+  const cleanNotes = details.notes?.trim();
 
   return [
     "hey pickd 👋 i'm hungry!",
@@ -23,10 +25,11 @@ export function buildOrderMessage(items: ResolvedLine[], details: OrderDetails) 
     "",
     `total: ₹${total} 💸`,
     "",
-    `name: ${details.name}`,
-    `room: ${details.room} 🛎️`,
-    `hotel: ${details.hotel}`,
-    ...(details.notes ? [`notes: ${details.notes}`] : []),
+    `name: ${details.guestName}`,
+    `room: ${details.roomNumber} 🛎️`,
+    `hotel: ${details.propertyName} 🏨`,
+    `location: ${details.propertyLocation} 📍`,
+    ...(cleanNotes ? [`notes: ${cleanNotes}`] : []),
     "",
     "pickd for me, please 🧡",
   ].join("\n");
