@@ -1,11 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProductCard } from "@/components/pickd/ProductCard";
 import { ProductSheet } from "@/components/pickd/ProductSheet";
 import { categories, menu, searchMenu, type Product } from "@/data/menu";
 import { useFoodFilter } from "@/lib/veg-filter";
 import { cn } from "@/lib/utils";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { isProductOrderable, orderAvailableFirst } from "@/lib/product-availability";
 
 interface MenuSearch {
   q: string;
@@ -43,6 +45,8 @@ function MenuPage() {
   const [active, setActive] = useState<Product | null>(null);
   const { filter, setFilter } = useFoodFilter();
   const [underBudget, setUnderBudget] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(24);
+  const now = useAvailabilityNow();
 
   const results = useMemo(() => {
     let items = menu;
@@ -58,6 +62,7 @@ function MenuPage() {
       items = items.filter(
         (p) =>
           p.category === "Burgers & Wraps" ||
+          p.category === "Pizza" ||
           p.keywords.includes("pizza") ||
           p.name.toLowerCase().includes("pizza"),
       );
@@ -71,7 +76,7 @@ function MenuPage() {
           p.price <= 199 &&
           p.category !== "Drinks & Shakes" &&
           p.category !== "Sweet Cravings" &&
-          p.category !== "Snacks & Chocolates",
+          p.category !== "Snacks & Sides",
       );
     } else if (cat === "drinks-coffee") {
       items = items.filter((p) => {
@@ -80,7 +85,6 @@ function MenuPage() {
         return (
           (p.category === "Drinks & Shakes" &&
             (name.includes("coffee") ||
-              name.includes("tea") ||
               name.includes("water") ||
               name.includes("juice") ||
               name.includes("cola") ||
@@ -110,11 +114,15 @@ function MenuPage() {
         );
       });
     } else if (cat === "biryani-rice" || cat === "Biryani & Rice") {
-      items = items.filter((p) => p.category === "Biryani & Rice");
-    } else if (cat === "south-indian" || cat === "South Indian Dinner") {
-      items = items.filter((p) => p.category === "South Indian Dinner");
-    } else if (cat === "snacks-chocolates" || cat === "Snacks & Chocolates") {
-      items = items.filter((p) => p.category === "Snacks & Chocolates");
+      items = items.filter(
+        (p) => p.category === "Biryani & Rice" || /biryani|biriyani/i.test(p.name),
+      );
+    } else if (cat === "south-indian") {
+      items = items.filter(
+        (p) => p.category === "Idli & Tiffin" || p.category === "Dosa & Uthappam",
+      );
+    } else if (cat === "snacks-chocolates") {
+      items = items.filter((p) => p.category === "Snacks & Sides");
     } else if (cat === "sweet-cravings" || cat === "Sweet Cravings") {
       items = items.filter((p) => p.category === "Sweet Cravings");
     } else if (cat !== "all") {
@@ -133,8 +141,15 @@ function MenuPage() {
       items = items.filter((p) => p.price <= 199);
     }
 
-    return searchMenu(q, items);
+    return orderAvailableFirst(searchMenu(q, items), now);
+  }, [q, cat, filter, underBudget, now]);
+
+  useEffect(() => {
+    setVisibleCount(24);
   }, [q, cat, filter, underBudget]);
+
+  const visibleResults = results.slice(0, visibleCount);
+  const availableCount = results.filter((product) => isProductOrderable(product, now)).length;
 
   const pageTitle = useMemo(() => {
     switch (cat) {
@@ -149,18 +164,23 @@ function MenuPage() {
         return "biryani & rice 🍚";
       case "burgers-wraps-quick-bites":
         return "burgers, wraps & quick bites 🍔";
+      case "Pizza":
+        return "pizza 🍕";
       case "crispy-grill-custom":
         return "crispy & grill 🍗";
-      case "South Indian Dinner":
       case "south-indian":
         return "south indian favourites 🥞";
-      case "Snacks & Chocolates":
+      case "Idli & Tiffin":
+        return "idli & tiffin favourites 🍽️";
+      case "Dosa & Uthappam":
+        return "dosa & uthappam 🥞";
       case "snacks-chocolates":
-        return "snacks & chocolates 🍿";
+      case "Snacks & Sides":
+        return "snacks & sides 🍿";
       case "dinner-under-199":
         return "dinner under ₹199 💸";
       case "drinks-coffee":
-        return "drinks & coffee 🥤";
+        return "cold drinks 🥤";
       case "shakes-coolers":
         return "shakes & coolers 🥤";
       case "Sweet Cravings":
@@ -175,22 +195,16 @@ function MenuPage() {
     if (cat === pillId) return true;
     if ((cat === "biryani-rice" || cat === "Biryani & Rice") && pillId === "Biryani & Rice")
       return true;
-    if (cat === "burgers-wraps-quick-bites" && pillId === "Burgers & Wraps") return true;
+    if (cat === "burgers-wraps-quick-bites" && (pillId === "Burgers & Wraps" || pillId === "Pizza"))
+      return true;
     if (
       cat === "crispy-grill-custom" &&
       (pillId === "Crispy & Grill" || pillId === "Shawarma & Grill")
     )
       return true;
-    if (
-      (cat === "south-indian" || cat === "South Indian Dinner") &&
-      pillId === "South Indian Dinner"
-    )
+    if (cat === "south-indian" && (pillId === "Idli & Tiffin" || pillId === "Dosa & Uthappam"))
       return true;
-    if (
-      (cat === "snacks-chocolates" || cat === "Snacks & Chocolates") &&
-      pillId === "Snacks & Chocolates"
-    )
-      return true;
+    if (cat === "snacks-chocolates" && pillId === "Snacks & Sides") return true;
     if ((cat === "sweet-cravings" || cat === "Sweet Cravings") && pillId === "Sweet Cravings")
       return true;
     if (cat === "veg-favourites" && pillId === "Veg Picks") return true;
@@ -208,6 +222,16 @@ function MenuPage() {
     <div className="pb-24 pt-6">
       <div className="shell">
         <h1 className="text-2xl font-extrabold lowercase">{pageTitle}</h1>
+
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-black px-4 py-3 text-white">
+          <p className="text-sm font-extrabold lowercase">
+            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-veg" />
+            {availableCount} available now
+          </p>
+          <p className="text-right text-[11px] font-semibold lowercase text-white/70">
+            order-now picks are shown first
+          </p>
+        </div>
 
         <div className="relative mt-4">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -263,11 +287,34 @@ function MenuPage() {
           <p className="mt-1 text-sm lowercase text-muted-foreground">try another craving.</p>
         </div>
       ) : (
-        <div className="shell mt-5 grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {results.map((p) => (
-            <ProductCard key={p.id} product={p} onOpen={setActive} />
-          ))}
-        </div>
+        <>
+          <div className="shell mt-5 flex items-center justify-between gap-3">
+            <p className="text-xs font-semibold lowercase text-muted-foreground">
+              showing {visibleResults.length} of {results.length} picks
+            </p>
+            {results.length > 24 && (
+              <p className="text-xs lowercase text-muted-foreground">
+                search or filter to decide faster
+              </p>
+            )}
+          </div>
+          <div className="shell mt-3 grid grid-cols-1 min-[480px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {visibleResults.map((p) => (
+              <ProductCard key={p.id} product={p} onOpen={setActive} />
+            ))}
+          </div>
+          {visibleCount < results.length && (
+            <div className="shell mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => count + 24)}
+                className="rounded-full border border-border bg-card px-6 py-3 text-sm font-bold lowercase transition-colors hover:bg-secondary"
+              >
+                show 24 more
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       <ProductSheet product={active} onClose={() => setActive(null)} />

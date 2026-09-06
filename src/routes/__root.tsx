@@ -16,6 +16,7 @@ import { FoodFilterProvider } from "@/lib/veg-filter";
 import { Header } from "@/components/pickd/Header";
 import { Footer } from "@/components/pickd/Footer";
 import { CartBar } from "@/components/pickd/CartBar";
+import { AvailabilityClockProvider } from "@/lib/availability-clock";
 
 function NotFoundComponent() {
   return (
@@ -126,19 +127,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <FoodFilterProvider>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">
-              {/* Required: nested routes render here. */}
-              <Outlet />
-            </main>
-            <Footer />
-            <CartBar />
-          </div>
-        </FoodFilterProvider>
-      </CartProvider>
+      <AvailabilityClockProvider>
+        <CartProvider>
+          <FoodFilterProvider>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">
+                {/* Required: nested routes render here. */}
+                <Outlet />
+              </main>
+              <Footer />
+              <CartBar />
+            </div>
+          </FoodFilterProvider>
+        </CartProvider>
+      </AvailabilityClockProvider>
     </QueryClientProvider>
   );
 }

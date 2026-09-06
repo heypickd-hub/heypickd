@@ -4,24 +4,24 @@ export const config = {
     tagline: "good food, pickd for you.",
   },
   /** WhatsApp number in international format, digits only. */
-  whatsappNumber: "918939650130",
+  whatsappNumber: import.meta.env.VITE_PICKD_WHATSAPP_NUMBER || "mb no",
   /** Phone number for the tel: link. */
-  phoneNumber: "+916385349075",
+  phoneNumber: import.meta.env.VITE_PICKD_PHONE_NUMBER || "mb no",
   instagramUrl: "https://instagram.com/pickd",
   /** Minimum food order value in rupees. 0 = no minimum. */
-  minimumOrder: 0,
+  minimumOrder: 149,
   /** Fallback hotel/branch when the URL has no /h/<branch> segment. */
-  defaultBranch: "RedStone Hotel",
+  defaultBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "name",
   /** Alias — the hotel/branch used across features. */
-  hotelBranch: "RedStone Hotel",
+  hotelBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "name",
   /** Pickd handling fee added on top of a custom snack combo, in rupees. */
   comboServiceFee: 15,
   /** Feature switches. */
   comboEnabled: true,
   askPickdEnabled: true,
-  /** 24h format, local time. */
-  openingTime: "11:00",
-  closingTime: "23:30",
+  /** Overall service hours in India time. Individual dishes have narrower windows. */
+  openingTime: "07:00",
+  closingTime: "22:30",
   /** Master switch — set true to stop taking orders. */
   ordersPaused: false,
 } as const;
@@ -43,7 +43,15 @@ export function formatTime12Hour(value: string) {
 
 export function isOpenNow(now = new Date()): boolean {
   if (config.ordersPaused) return false;
-  const current = now.getHours() * 60 + now.getMinutes();
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(now);
+  const current =
+    Number(parts.find((part) => part.type === "hour")?.value ?? 0) * 60 +
+    Number(parts.find((part) => part.type === "minute")?.value ?? 0);
   const open = toMinutes(config.openingTime);
   const close = toMinutes(config.closingTime);
   return close > open ? current >= open && current < close : current >= open || current < close;

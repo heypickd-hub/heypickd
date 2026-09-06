@@ -16,6 +16,12 @@ dist-ssr
 .nitro
 *.local
 
+# Private business and deployment details
+.env
+.env.*
+!.env.example
+src/data/properties.private.*
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

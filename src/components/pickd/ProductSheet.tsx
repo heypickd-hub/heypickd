@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import type { Product } from "@/data/menu";
 import { useCart } from "@/lib/cart";
 import { FoodTypeDot } from "./FoodTypeDot";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { getProductAvailability } from "@/lib/product-availability";
+import { ProductImage } from "./ProductImage";
 
 interface Props {
   product: Product | null;
@@ -13,6 +16,7 @@ export function ProductSheet({ product, onClose }: Props) {
   const { add } = useCart();
   const [qty, setQty] = useState(1);
   const [note, setNote] = useState("");
+  const now = useAvailabilityNow();
 
   useEffect(() => {
     setQty(1);
@@ -31,6 +35,7 @@ export function ProductSheet({ product, onClose }: Props) {
   }, [product, onClose]);
 
   if (!product) return null;
+  const availability = getProductAvailability(product, now);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
@@ -53,14 +58,22 @@ export function ProductSheet({ product, onClose }: Props) {
           <X className="h-4 w-4" />
         </button>
 
-        <div className="overflow-hidden rounded-2xl bg-muted">
-          <img
+        <div className="relative overflow-hidden rounded-2xl bg-muted">
+          <ProductImage
             src={product.image}
             alt={product.name}
-            width={800}
-            height={600}
             className="aspect-[4/3] w-full object-cover"
           />
+          {!availability.isOrderable && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 px-4 text-center text-white">
+              <span className="text-sm font-extrabold lowercase">{availability.message}</span>
+              {availability.windowLabel && (
+                <span className="mt-1 text-xs font-semibold lowercase text-white/80">
+                  order time · {availability.windowLabel}
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-4 flex items-start gap-2">
@@ -102,8 +115,9 @@ export function ProductSheet({ product, onClose }: Props) {
             <button
               type="button"
               aria-label="increase"
+              disabled={!availability.isOrderable}
               onClick={() => setQty((q) => q + 1)}
-              className="rounded-full p-2 transition-transform active:scale-90"
+              className="rounded-full p-2 transition-transform active:scale-90 disabled:cursor-not-allowed disabled:opacity-35"
             >
               <Plus className="h-3.5 w-3.5" />
             </button>
@@ -111,14 +125,16 @@ export function ProductSheet({ product, onClose }: Props) {
 
           <button
             type="button"
-            disabled={!product.available}
+            disabled={!availability.isOrderable}
             onClick={() => {
               add(product.id, qty, note.trim() || undefined);
               onClose();
             }}
             className="flex-1 rounded-full bg-primary px-5 py-3 text-sm font-bold lowercase text-primary-foreground transition-transform active:scale-[0.98] disabled:opacity-50"
           >
-            {product.available ? `add to pickd · ₹${product.price * qty}` : "sold out for now"}
+            {availability.isOrderable
+              ? `add to pickd · ₹${product.price * qty}`
+              : availability.message}
           </button>
         </div>
       </div>

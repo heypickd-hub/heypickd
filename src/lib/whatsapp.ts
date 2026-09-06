@@ -52,7 +52,7 @@ export function buildAskMessage(req: AskRequest) {
     "i need:",
     `item: ${req.item}`,
     ...(req.quantity ? [`quantity: ${req.quantity}`] : []),
-    ...(req.brand ? [`preferred brand/shop: ${req.brand}`] : []),
+    ...(req.brand ? [`preferred brand: ${req.brand}`] : []),
     `room: ${req.room} 🛎️`,
     `hotel: ${req.propertyName} 🏨`,
     `location: ${req.propertyLocation} 📍`,

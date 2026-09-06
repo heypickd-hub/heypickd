@@ -4,9 +4,12 @@ import { useState } from "react";
 import { FoodTypeDot } from "@/components/pickd/FoodTypeDot";
 import { ProductCard } from "@/components/pickd/ProductCard";
 import { ProductSheet } from "@/components/pickd/ProductSheet";
+import { ProductImage } from "@/components/pickd/ProductImage";
 import { config, isOpenNow } from "@/config";
 import { upsellsFor, type Product } from "@/data/menu";
 import { useCart } from "@/lib/cart";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { getProductAvailability } from "@/lib/product-availability";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({
@@ -31,9 +34,16 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const { items, subtotal, setQty, remove, setNote } = useCart();
   const [active, setActive] = useState<Product | null>(null);
-  const open = isOpenNow();
+  const now = useAvailabilityNow();
+  const open = isOpenNow(now);
   const remaining = Math.max(0, config.minimumOrder - subtotal);
-  const upsells = upsellsFor(items.map((l) => l.product));
+  const upsells = upsellsFor(
+    items.map((l) => l.product),
+    now,
+  );
+  const closedLines = items.filter(
+    (line) => !getProductAvailability(line.product, now).isOrderable,
+  );
 
   if (items.length === 0) {
     return (
@@ -56,72 +66,81 @@ function CartPage() {
         <h1 className="text-2xl font-extrabold lowercase">your pickd</h1>
 
         <div className="mt-4 space-y-3">
-          {items.map((line) => (
-            <div key={line.id} className="rounded-2xl border border-border/70 bg-card p-3.5">
-              <div className="flex gap-3">
-                <img
-                  src={line.product.image}
-                  alt={line.product.name}
-                  loading="lazy"
-                  width={160}
-                  height={160}
-                  className="h-16 w-16 rounded-xl object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start gap-2">
-                    <FoodTypeDot type={line.product.foodType} className="mt-1" />
-                    <h2 className="text-sm font-bold leading-snug">{line.product.name}</h2>
-                  </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">₹{line.product.price} each</p>
-                  {line.custom && (
-                    <p className="mt-1.5 text-xs text-muted-foreground italic lowercase">
-                      {line.custom.parts.join(" + ")}
-                    </p>
-                  )}
-
-                  <div className="mt-2 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-1 rounded-full border border-border p-0.5">
-                      <button
-                        type="button"
-                        aria-label="decrease quantity"
-                        onClick={() => setQty(line.id, line.qty - 1)}
-                        className="rounded-full p-1.5 active:scale-90"
-                      >
-                        <Minus className="h-3.5 w-3.5" />
-                      </button>
-                      <span className="w-5 text-center text-sm font-bold">{line.qty}</span>
-                      <button
-                        type="button"
-                        aria-label="increase quantity"
-                        onClick={() => setQty(line.id, line.qty + 1)}
-                        className="rounded-full p-1.5 active:scale-90"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                      </button>
+          {items.map((line) => {
+            const availability = getProductAvailability(line.product, now);
+            return (
+              <div key={line.id} className="rounded-2xl border border-border/70 bg-card p-3.5">
+                <div className="flex gap-3">
+                  <ProductImage
+                    src={line.product.image}
+                    alt={line.product.name}
+                    loading="lazy"
+                    className="h-16 w-16 rounded-xl object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start gap-2">
+                      <FoodTypeDot type={line.product.foodType} className="mt-1" />
+                      <h2 className="text-sm font-bold leading-snug">{line.product.name}</h2>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-extrabold">₹{line.lineTotal}</span>
-                      <button
-                        type="button"
-                        aria-label={`remove ${line.product.name}`}
-                        onClick={() => remove(line.id)}
-                        className="rounded-full p-1.5 text-muted-foreground hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      ₹{line.product.price} each
+                    </p>
+                    {!availability.isOrderable && (
+                      <p className="mt-1 inline-flex rounded-md bg-black px-2 py-1 text-[10px] font-extrabold lowercase text-white">
+                        {availability.message} · {availability.windowLabel}
+                      </p>
+                    )}
+                    {line.custom && (
+                      <p className="mt-1.5 text-xs text-muted-foreground italic lowercase">
+                        {line.custom.parts.join(" + ")}
+                      </p>
+                    )}
+
+                    <div className="mt-2 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-1 rounded-full border border-border p-0.5">
+                        <button
+                          type="button"
+                          aria-label="decrease quantity"
+                          onClick={() => setQty(line.id, line.qty - 1)}
+                          className="rounded-full p-1.5 active:scale-90"
+                        >
+                          <Minus className="h-3.5 w-3.5" />
+                        </button>
+                        <span className="w-5 text-center text-sm font-bold">{line.qty}</span>
+                        <button
+                          type="button"
+                          aria-label="increase quantity"
+                          onClick={() => setQty(line.id, line.qty + 1)}
+                          disabled={!availability.isOrderable}
+                          className="rounded-full p-1.5 active:scale-90 disabled:cursor-not-allowed disabled:opacity-35"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-extrabold">₹{line.lineTotal}</span>
+                        <button
+                          type="button"
+                          aria-label={`remove ${line.product.name}`}
+                          onClick={() => remove(line.id)}
+                          className="rounded-full p-1.5 text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <input
-                value={line.note ?? ""}
-                onChange={(e) => setNote(line.id, e.target.value)}
-                placeholder="anything we should know?"
-                className="mt-3 w-full rounded-xl border border-input bg-background px-3 py-2 text-xs outline-none placeholder:text-muted-foreground/70 focus:border-butter"
-              />
-            </div>
-          ))}
+                <input
+                  value={line.note ?? ""}
+                  onChange={(e) => setNote(line.id, e.target.value)}
+                  placeholder="anything we should know?"
+                  className="mt-3 w-full rounded-xl border border-input bg-background px-3 py-2 text-xs outline-none placeholder:text-muted-foreground/70 focus:border-butter"
+                />
+              </div>
+            );
+          })}
         </div>
 
         {remaining > 0 && (
@@ -161,17 +180,27 @@ function CartPage() {
             we're taking a break — ordering opens again soon.
           </p>
         )}
+        {open && closedLines.length > 0 && (
+          <p className="mt-3 rounded-xl bg-black px-3 py-2 text-sm font-semibold lowercase text-white">
+            {closedLines.length} item{closedLines.length === 1 ? " is" : "s are"} outside its order
+            time. remove it or return during the time shown above.
+          </p>
+        )}
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/95 py-3 backdrop-blur-md">
         <div className="shell sm:mx-auto sm:max-w-md">
-          {remaining > 0 || !open ? (
+          {remaining > 0 || !open || closedLines.length > 0 ? (
             <button
               type="button"
               disabled
               className="w-full cursor-not-allowed rounded-full bg-muted px-5 py-3.5 text-sm font-bold lowercase text-muted-foreground"
             >
-              {!open ? "ordering opens again soon" : `add ₹${remaining} more to continue`}
+              {!open
+                ? "ordering opens again soon"
+                : closedLines.length > 0
+                  ? "some items are unavailable now"
+                  : `add ₹${remaining} more to continue`}
             </button>
           ) : (
             <Link

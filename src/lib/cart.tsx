@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { getProduct, type Product } from "@/data/menu";
+import { isProductOrderable } from "@/lib/product-availability";
 
 /** A cart-only item that isn't in the menu (e.g. a built snack combo). */
 export interface CustomItem {
@@ -59,7 +60,7 @@ function customToProduct(id: string, custom: CustomItem): Product {
     price: custom.price,
     category: "Combos",
     foodType: "veg",
-    source: "pickd",
+    source: "vendor-custom",
     featured: false,
     available: true,
     image: custom.image,
@@ -93,6 +94,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [lines]);
 
   const add = useCallback((id: string, qty = 1, note?: string) => {
+    const product = getProduct(id);
+    if (!product || !isProductOrderable(product)) return;
     setLines((prev) => {
       const existing = prev.find((l) => l.id === id);
       if (existing) {
@@ -106,6 +109,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const addCustom = useCallback((item: CustomItem, qty = 1) => {
     const key = `combo:${item.name}:${item.parts.join("|")}:${item.price}`;
+    if (!isProductOrderable(customToProduct(key, item))) return;
     setLines((prev) => {
       const existing = prev.find((l) => l.id === key);
       if (existing) {
@@ -131,7 +135,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines((prev) => prev.filter((l) => l.id !== id));
   }, []);
 
-  const clear = useCallback(() => setLines([]), []);
+  const clear = useCallback(() => {
+    setLines([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const setBranch = useCallback((value: string) => {
     setBranchState(value);

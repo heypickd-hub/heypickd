@@ -1,5 +1,17 @@
 # Pickd Bites
 
+## Private configuration
+
+Business contact and property details are not stored in Git. Copy `.env.example` to
+`.env.local`, replace the placeholder values, and keep `.env.local` private. Add the same
+variables to the deployment provider when publishing the site.
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+The public example intentionally uses `name`, `mb no`, and `location` placeholders.
+
 # BUILD PICKD — MINIMAL GEN-Z HOTEL FOOD MENU WEBSITE
 
 Create a polished, production-ready customer-facing food ordering website for a brand called:

@@ -4,6 +4,9 @@ import type { Product } from "@/data/menu";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 import { FoodTypeDot } from "./FoodTypeDot";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { getProductAvailability } from "@/lib/product-availability";
+import { ProductImage } from "./ProductImage";
 
 interface Props {
   product: Product;
@@ -79,9 +82,10 @@ export function getCardStyles(product: Product): CardStyles {
     };
   }
 
-  // 5. South Indian Dinner (soft yellow/cream tint)
+  // 5. South Indian tiffin (soft yellow/cream tint)
   if (
-    category === "South Indian Dinner" ||
+    category === "Idli & Tiffin" ||
+    category === "Dosa & Uthappam" ||
     name.includes("dosa") ||
     name.includes("idli") ||
     name.includes("uthappam")
@@ -132,8 +136,8 @@ export function getCardStyles(product: Product): CardStyles {
     };
   }
 
-  // 8. Snacks & Chocolates
-  if (category === "Snacks & Chocolates") {
+  // 8. Snacks & Sides
+  if (category === "Snacks & Sides") {
     if (
       keywords.includes("chips") ||
       keywords.includes("crisp") ||
@@ -171,10 +175,12 @@ export function getCardStyles(product: Product): CardStyles {
 export function ProductCard({ product, onOpen, className }: Props) {
   const { add } = useCart();
   const [added, setAdded] = useState(false);
+  const now = useAvailabilityNow();
+  const availability = getProductAvailability(product, now);
 
   const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!product.available) return;
+    if (!availability.isOrderable) return;
     add(product.id);
     setAdded(true);
     setTimeout(() => setAdded(false), 900);
@@ -183,7 +189,7 @@ export function ProductCard({ product, onOpen, className }: Props) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onOpen(product);
+      if (availability.isOrderable) onOpen(product);
     }
   };
 
@@ -191,35 +197,44 @@ export function ProductCard({ product, onOpen, className }: Props) {
 
   return (
     <article
-      onClick={() => onOpen(product)}
+      onClick={() => availability.isOrderable && onOpen(product)}
       onKeyDown={handleKeyDown}
       role="button"
-      tabIndex={0}
-      aria-label={`${product.name}, ${product.foodType}, price: ₹${product.price}`}
+      tabIndex={availability.isOrderable ? 0 : -1}
+      aria-disabled={!availability.isOrderable}
+      aria-label={`${product.name}, ${product.foodType}, price: ₹${product.price}${availability.isOrderable ? "" : `, ${availability.message}`}`}
       className={cn(
         "group flex cursor-pointer flex-col overflow-hidden rounded-2xl border transition-all duration-300 shadow-[var(--shadow-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] focus-visible:ring-2 focus-visible:ring-butter focus-visible:ring-offset-2 outline-none h-full",
         styles.cardBg,
         styles.borderColor,
-        !product.available && "opacity-75",
+        !availability.isOrderable &&
+          "cursor-not-allowed opacity-80 hover:translate-y-0 hover:shadow-[var(--shadow-soft)]",
         className,
       )}
     >
       {/* Top Part: Image Area (4:3 aspect ratio) */}
       <div className={cn("relative aspect-[4/3] w-full overflow-hidden bg-muted", styles.imgBg)}>
-        <img
+        <ProductImage
           src={product.image}
           alt={product.name}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {product.badge && product.available && (
+        {product.badge && availability.isOrderable && (
           <span className="absolute left-2 top-2 sm:left-2.5 sm:top-2.5 rounded-full bg-card/95 px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-bold uppercase text-foreground shadow-[var(--shadow-soft)]">
             {product.badge === "most pickd" ? "🔥 most pickd" : product.badge}
           </span>
         )}
-        {!product.available && (
-          <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-center text-xs font-extrabold uppercase text-white tracking-wider backdrop-blur-[1px]">
-            sold out for now
+        {!availability.isOrderable && (
+          <span className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 px-3 text-center text-white backdrop-blur-[1px]">
+            <span className="text-xs font-extrabold lowercase tracking-wide">
+              {availability.message}
+            </span>
+            {availability.windowLabel && (
+              <span className="mt-1 text-[10px] font-semibold lowercase text-white/80">
+                order time · {availability.windowLabel}
+              </span>
+            )}
           </span>
         )}
       </div>
@@ -264,7 +279,7 @@ export function ProductCard({ product, onOpen, className }: Props) {
           <button
             type="button"
             onClick={handleAdd}
-            disabled={!product.available}
+            disabled={!availability.isOrderable}
             aria-label={`add ${product.name} to cart`}
             className={cn(
               "inline-flex items-center gap-0.5 sm:gap-1 rounded-full border px-1.5 min-[360px]:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-bold lowercase transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer shadow-[var(--shadow-soft)] focus-visible:ring-2 focus-visible:ring-butter focus-visible:outline-none min-h-[28px] sm:min-h-[34px] justify-center shrink-0",
@@ -274,7 +289,9 @@ export function ProductCard({ product, onOpen, className }: Props) {
             )}
           >
             {added ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
-            <span className="hidden min-[340px]:inline">{added ? "added" : "add"}</span>
+            <span className="hidden min-[340px]:inline">
+              {added ? "added" : availability.isOrderable ? "add" : "closed"}
+            </span>
           </button>
         </div>
       </div>

@@ -50,7 +50,10 @@ export function BannerRail() {
   useEffect(() => {
     if (isPaused) return;
     // Check prefers-reduced-motion
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       return;
     }
     const id = setInterval(next, AUTO_DELAY_MS);

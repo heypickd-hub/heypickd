@@ -9,12 +9,12 @@ export const Route = createFileRoute("/combo-builder")({
       {
         name: "description",
         content:
-          "Pick your snacks, sweets and drinks to build your own custom combo, delivered straight to your stay.",
+          "Start with a full meal or snack box, then add a drink or dessert for a combo delivered to your stay.",
       },
       { property: "og:title", content: "build your combo — pickd" },
       {
         property: "og:description",
-        content: "Pick your snacks, sweets and drinks to build your own custom combo.",
+        content: "Build a meal combo or snack box, then add drinks and desserts.",
       },
       { property: "og:url", content: "/combo-builder" },
     ],
@@ -41,7 +41,7 @@ function ComboBuilderPage() {
         <div className="space-y-1">
           <h1 className="text-2xl font-extrabold lowercase sm:text-3xl">build your combo</h1>
           <p className="text-sm lowercase text-muted-foreground">
-            pick your snacks, sweets and drinks.
+            start with a meal or snack box, then add drinks and dessert.
           </p>
         </div>
 

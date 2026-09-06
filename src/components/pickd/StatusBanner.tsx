@@ -1,7 +1,9 @@
 import { isOpenNow, config, formatTime12Hour } from "@/config";
+import { useAvailabilityNow } from "@/lib/availability-clock";
 
 export function StatusBanner() {
-  if (isOpenNow()) return null;
+  const now = useAvailabilityNow();
+  if (isOpenNow(now)) return null;
   return (
     <div className="shell pt-4">
       <div className="rounded-2xl border border-border bg-secondary/60 px-4 py-3">

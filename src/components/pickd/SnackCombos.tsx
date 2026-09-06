@@ -3,12 +3,33 @@ import { useState } from "react";
 import { comboPresets, type ComboPreset } from "@/data/snacks";
 import { useCart } from "@/lib/cart";
 import { cn } from "@/lib/utils";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { getProductAvailability } from "@/lib/product-availability";
+
+function comboAsProduct(combo: ComboPreset) {
+  return {
+    id: `combo:${combo.id}`,
+    name: combo.name,
+    description: combo.parts.join(", "),
+    price: combo.price,
+    category: "Combos" as const,
+    foodType: "veg" as const,
+    source: "vendor-custom" as const,
+    featured: Boolean(combo.badge),
+    available: true,
+    image: combo.image,
+    keywords: ["snack combo"],
+  };
+}
 
 function PresetCard({ combo }: { combo: ComboPreset }) {
   const { addCustom } = useCart();
   const [added, setAdded] = useState(false);
+  const now = useAvailabilityNow();
+  const availability = getProductAvailability(comboAsProduct(combo), now);
 
   const handleAdd = () => {
+    if (!availability.isOrderable) return;
     addCustom({
       name: combo.name,
       price: combo.price,
@@ -36,6 +57,14 @@ function PresetCard({ combo }: { combo: ComboPreset }) {
             {combo.badge === "most pickd" ? "🔥 most pickd" : combo.badge}
           </span>
         )}
+        {!availability.isOrderable && (
+          <span className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 px-3 text-center text-white">
+            <span className="text-xs font-extrabold lowercase">{availability.message}</span>
+            <span className="mt-1 text-[10px] font-semibold lowercase text-white/80">
+              order time · {availability.windowLabel}
+            </span>
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-1.5 p-3.5">
         <h3 className="text-sm font-bold lowercase leading-snug">{combo.name}</h3>
@@ -47,16 +76,17 @@ function PresetCard({ combo }: { combo: ComboPreset }) {
           <button
             type="button"
             onClick={handleAdd}
+            disabled={!availability.isOrderable}
             aria-label={`add ${combo.name}`}
             className={cn(
-              "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold lowercase transition-all active:scale-95",
+              "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-bold lowercase transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-45",
               added
                 ? "border-veg bg-veg text-primary-foreground"
                 : "border-foreground/15 bg-secondary text-foreground hover:bg-butter hover:text-accent-foreground",
             )}
           >
             {added ? <Check className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-            {added ? "added" : "add"}
+            {added ? "added" : availability.isOrderable ? "add" : "closed"}
           </button>
         </div>
       </div>

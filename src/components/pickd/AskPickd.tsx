@@ -234,14 +234,14 @@ export function AskPickdModal({
 
           <div className="space-y-1">
             <label htmlFor="ask-brand" className="text-xs font-bold lowercase text-foreground">
-              preferred brand or shop
+              preferred brand
             </label>
             <input
               id="ask-brand"
               type="text"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              placeholder="e.g. amul, local supermarket"
+              placeholder="e.g. amul or another brand"
               className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-sm outline-none focus:border-butter"
             />
           </div>

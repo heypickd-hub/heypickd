@@ -9,10 +9,11 @@ import { StatusBanner } from "@/components/pickd/StatusBanner";
 import { config, isOpenNow } from "@/config";
 import { byCategory, menu, mostPickd, underBudget, type Product } from "@/data/menu";
 import { useFoodFilter } from "@/lib/veg-filter";
-import { SnackCombos } from "@/components/pickd/SnackCombos";
 import { AskPickdSection, AskPickdModal } from "@/components/pickd/AskPickd";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import { useAvailabilityNow } from "@/lib/availability-clock";
+import { orderAvailableFirst } from "@/lib/product-availability";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,7 +44,8 @@ const categoryShortcuts = [
   { id: "biryani", label: "biryani", emoji: "🍚" },
   { id: "burgers", label: "burgers", emoji: "🍔" },
   { id: "crispy-and-grill", label: "crispy & grill", emoji: "🍗" },
-  { id: "south-indian", label: "south indian", emoji: "🥞" },
+  { id: "idli-tiffin", label: "idli & tiffin", emoji: "🍽️" },
+  { id: "dosa-uthappam", label: "dosa & uthappam", emoji: "🥞" },
   { id: "veg-picks", label: "veg picks", emoji: "🌱" },
   { id: "drinks", label: "drinks", emoji: "🥤" },
   { id: "desserts", label: "desserts", emoji: "🍰" },
@@ -52,7 +54,8 @@ const categoryShortcuts = [
 function Home() {
   const [active, setActive] = useState<Product | null>(null);
   const [askOpen, setAskOpen] = useState(false);
-  const open = isOpenNow();
+  const now = useAvailabilityNow();
+  const open = isOpenNow(now);
   const { filter } = useFoodFilter();
 
   const [activeSection, setActiveSection] = useState<string>("popular");
@@ -67,7 +70,8 @@ function Home() {
       "biryani",
       "burgers",
       "crispy-and-grill",
-      "south-indian",
+      "idli-tiffin",
+      "dosa-uthappam",
       "snacks-and-chill",
       "under-199",
       "drinks",
@@ -118,10 +122,13 @@ function Home() {
     }, 800);
   };
 
-  const filtered = (items: Product[]) =>
-    filter === "all"
-      ? items
-      : items.filter((p) => (filter === "veg" ? p.foodType === "veg" : p.foodType === "non-veg"));
+  const filtered = (items: Product[]) => {
+    const matching =
+      filter === "all"
+        ? items
+        : items.filter((p) => (filter === "veg" ? p.foodType === "veg" : p.foodType === "non-veg"));
+    return orderAvailableFirst(matching, now);
+  };
 
   const LIMIT = 8;
 
@@ -135,13 +142,18 @@ function Home() {
   const vegFavouritesList = filtered(menu.filter((p) => p.foodType === "veg"));
 
   // 4. Biryani & Rice
-  const biryaniList = filtered(byCategory("Biryani & Rice"));
+  const biryaniList = filtered(
+    menu.filter(
+      (product) => product.category === "Biryani & Rice" || /biryani|biriyani/i.test(product.name),
+    ),
+  );
 
   // 5. Burgers, Wraps & Quick Bites
   const burgersWrapsQuickBitesList = filtered(
     menu.filter(
       (p) =>
         p.category === "Burgers & Wraps" ||
+        p.category === "Pizza" ||
         p.keywords.includes("pizza") ||
         p.name.toLowerCase().includes("pizza"),
     ),
@@ -152,43 +164,31 @@ function Home() {
     menu.filter((p) => p.category === "Crispy & Grill" || p.category === "Shawarma & Grill"),
   );
 
-  // 7. South Indian Favourites
-  const southIndianList = filtered(byCategory("South Indian Dinner"));
+  // 7. South Indian favourites — kept separate so idli and dosa are easy to find.
+  const idliTiffinList = filtered(byCategory("Idli & Tiffin"));
+  const dosaUthappamList = filtered(byCategory("Dosa & Uthappam"));
 
-  // 8. Snacks & Chocolates
-  const snacksChocolatesList = filtered(byCategory("Snacks & Chocolates"));
+  // 8. Snacks & Sides
+  const snacksSidesList = filtered(byCategory("Snacks & Sides"));
 
   // 9. Dinner Under ₹199
   const dinnerUnder199List = filtered(underBudget(199)).filter(
     (p) =>
       p.category !== "Drinks & Shakes" &&
       p.category !== "Sweet Cravings" &&
-      p.category !== "Snacks & Chocolates",
+      p.category !== "Snacks & Sides",
   );
 
-  // 10. Drinks & Coffee
+  // 10. Cold drinks
   const drinksAndCoffeeList = filtered(
     menu.filter((p) => {
       const name = p.name.toLowerCase();
-      const keywords = p.keywords;
       return (
-        (p.category === "Drinks & Shakes" &&
-          (name.includes("coffee") ||
-            name.includes("tea") ||
-            name.includes("water") ||
-            name.includes("juice") ||
-            name.includes("cola") ||
-            name.includes("soda") ||
-            keywords.includes("coffee") ||
-            keywords.includes("water") ||
-            keywords.includes("soda"))) ||
-        (p.id.startsWith("s-") &&
-          ((s) =>
-            s.name === "Coca-Cola" ||
-            s.name === "Sprite" ||
-            s.name === "Fanta" ||
-            s.name === "Water")(p)) ||
-        (p.id.startsWith("x-") && ((s) => s.name === "water" || s.name === "extra drink")(p))
+        p.category === "Drinks & Shakes" &&
+        !name.includes("shake") &&
+        !name.includes("mojito") &&
+        !name.includes("falooda") &&
+        !name.includes("smoothie")
       );
     }),
   );
@@ -240,7 +240,7 @@ function Home() {
                   we know what's good.
                 </h1>
                 <p className="max-w-md text-xs sm:text-sm leading-relaxed text-muted-foreground lowercase">
-                  a few really good picks, delivered straight to your stay.
+                  hotel favourites, delivered straight to your stay.
                 </p>
               </div>
 
@@ -287,7 +287,7 @@ function Home() {
                   order food
                 </h3>
                 <p className="text-[11px] text-muted-foreground lowercase">
-                  curated nearby favourites
+                  {menu.length} crave-worthy picks
                 </p>
               </div>
             </div>
@@ -307,7 +307,7 @@ function Home() {
                   build combo
                 </h3>
                 <p className="text-[11px] text-muted-foreground lowercase">
-                  snacks, sweets & drinks
+                  meals, snacks, drinks & sweets
                 </p>
               </div>
             </div>
@@ -449,21 +449,30 @@ function Home() {
       />
 
       <Section
-        id="south-indian"
-        title="south indian favourites 🥞"
-        subtitle="comfort, straight off the tawa."
-        items={southIndianList.slice(0, LIMIT)}
+        id="idli-tiffin"
+        title="idli & tiffin favourites 🍽️"
+        subtitle="soft, steamy south indian comfort."
+        items={idliTiffinList.slice(0, LIMIT)}
         onOpen={setActive}
-        seeAll={southIndianList.length > LIMIT ? { cat: "south-indian" } : undefined}
+        seeAll={idliTiffinList.length > LIMIT ? { cat: "Idli & Tiffin" } : undefined}
+      />
+
+      <Section
+        id="dosa-uthappam"
+        title="dosa & uthappam 🥞"
+        subtitle="crisp edges, hot tawa, proper comfort."
+        items={dosaUthappamList.slice(0, LIMIT)}
+        onOpen={setActive}
+        seeAll={dosaUthappamList.length > LIMIT ? { cat: "Dosa & Uthappam" } : undefined}
       />
 
       <Section
         id="snacks-and-chill"
-        title="snacks & chocolates 🍿"
-        subtitle="quick bites and sweet cravings."
-        items={snacksChocolatesList.slice(0, LIMIT)}
+        title="snacks & sides 🍿"
+        subtitle="quick bites to complete the order."
+        items={snacksSidesList.slice(0, LIMIT)}
         onOpen={setActive}
-        seeAll={snacksChocolatesList.length > LIMIT ? { cat: "snacks-chocolates" } : undefined}
+        seeAll={snacksSidesList.length > LIMIT ? { cat: "Snacks & Sides" } : undefined}
       />
 
       <Section
@@ -477,8 +486,8 @@ function Home() {
 
       <Section
         id="drinks"
-        title="drinks & coffee 🥤"
-        subtitle="refreshing soft drinks and warm coffee."
+        title="cold drinks 🥤"
+        subtitle="refreshing drinks to complete the meal."
         items={drinksAndCoffeeList.slice(0, LIMIT)}
         onOpen={setActive}
         seeAll={drinksAndCoffeeList.length > LIMIT ? { cat: "drinks-coffee" } : undefined}
