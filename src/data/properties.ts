@@ -7,10 +7,22 @@ export interface Property {
 
 const placeholderProperties: Property[] = [
   {
-    id: "property-1",
-    name: "name",
-    location: "location",
-    slug: "property-1",
+    id: "redstone-nungambakkam",
+    name: "RedStone Hotel",
+    location: "Nungambakkam, Chennai",
+    slug: "redstone-nungambakkam",
+  },
+  {
+    id: "redstone-tnagar",
+    name: "RedStone Service Apt",
+    location: "T. Nagar, Chennai",
+    slug: "redstone-tnagar",
+  },
+  {
+    id: "redfox-tnagar",
+    name: "RedFox Hotel",
+    location: "T. Nagar, Chennai",
+    slug: "redfox-tnagar",
   },
 ];
 
