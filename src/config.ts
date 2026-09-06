@@ -4,16 +4,16 @@ export const config = {
     tagline: "good food, pickd for you.",
   },
   /** WhatsApp number in international format, digits only. */
-  whatsappNumber: import.meta.env.VITE_PICKD_WHATSAPP_NUMBER || "mb no",
+  whatsappNumber: import.meta.env.VITE_PICKD_WHATSAPP_NUMBER || "918939650130",
   /** Phone number for the tel: link. */
-  phoneNumber: import.meta.env.VITE_PICKD_PHONE_NUMBER || "mb no",
+  phoneNumber: import.meta.env.VITE_PICKD_PHONE_NUMBER || "+916385349075",
   instagramUrl: "https://instagram.com/pickd",
   /** Minimum food order value in rupees. 0 = no minimum. */
   minimumOrder: 149,
   /** Fallback hotel/branch when the URL has no /h/<branch> segment. */
-  defaultBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "name",
+  defaultBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "RedStone Hotel",
   /** Alias — the hotel/branch used across features. */
-  hotelBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "name",
+  hotelBranch: import.meta.env.VITE_PICKD_DEFAULT_BRANCH || "RedStone Hotel",
   /** Pickd handling fee added on top of a custom snack combo, in rupees. */
   comboServiceFee: 15,
   /** Feature switches. */
